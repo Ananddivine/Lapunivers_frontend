@@ -101,7 +101,7 @@ function Navigation() {
                 <div className={`collapse navbar-collapse ${isNavbarOpen ? 'show' : ''}`} id="navbarSupportedContent">
                     <ul className="navbar-nav ml-auto">
                         <li className="nav-item">
-                            <NavLink className="nav-link" exact to="/" onClick={handleLinkClick}>HOME</NavLink>
+                            <NavLink className="nav-link"  to="/" onClick={handleLinkClick}>HOME</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/Product" onClick={handleLinkClick}>PRODUCT</NavLink>

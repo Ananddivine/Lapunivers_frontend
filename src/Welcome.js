@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
@@ -9,14 +9,16 @@ function Welcome() {
   const [username, setUsername] = useState("");
   const [file, setFile] = useState([]);
   const [description, setDescription] = useState("");
-  const baseURL = 'http://localhost:5001';
+  const baseURL = 'https://backend-1-la1d.onrender.com';
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(null);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
- 
+
+  // Removed the declaration of fileData
+
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -32,12 +34,10 @@ function Welcome() {
       replyTexts.includes(searchQuery.toLowerCase())
     );
   });
-  
- 
+
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     if (!storedUsername) {
-    
       navigate('/Login');
     } else {
       setUsername(storedUsername);
@@ -134,14 +134,13 @@ function Welcome() {
     updatedFiles[index].showReply = !updatedFiles[index].showReply;
     setFiles(updatedFiles);
   };
-  
+
   const handleReplySubmit = (index, filename) => {
     if (files[index].replyText && files[index].replyText.trim() !== "") {
-      // Prepend the username to the reply text
       const replyWithUsername = `${username} :-  ${files[index].replyText}`;
-  
+
       console.log('Reply text:', replyWithUsername);
-  
+
       const updatedFiles = [...files];
       updatedFiles[index] = {
         ...updatedFiles[index],
@@ -151,14 +150,13 @@ function Welcome() {
       };
       updatedFiles[index].replies.push(replyWithUsername);
       console.log('Updated files:', updatedFiles);
-  
+
       setFiles(updatedFiles);
-  
+
       const formData = new FormData();
       formData.append('reply', replyWithUsername);
       console.log('Form data:', formData);
-  
-      // Delay the POST request by a few milliseconds to allow time for the console logs to be displayed
+
       setTimeout(() => {
         axios.post(`${baseURL}/files/${filename}/replies`, replyWithUsername)
           .then(_response => {
@@ -172,36 +170,6 @@ function Welcome() {
       alert("Please enter a reply.");
     }
   };
-  
-  
-  useEffect(() => {
-    axios.get(`${baseURL}/files`)
-      .then(response => {
-        setFiles(response.data);
-        // Fetch reply text for each file
-        response.data.forEach(file => {
-          axios.get(`${baseURL}/files/${file.filename}/replies`)
-            .then(replyResponse => {
-              // Update files state with reply text
-              setFiles(prevFiles => prevFiles.map(prevFile => {
-                if (prevFile.filename === file.filename) {
-                  return {
-                    ...prevFile,
-                    replies: replyResponse.data
-                  };
-                }
-                return prevFile;
-              }));
-            })
-            .catch(() => {
-             
-            });
-        });
-      })
-      .catch(() => {
-       
-      });
-  }, [baseURL]);
 
   return (
     <div className="welcome">
@@ -213,6 +181,7 @@ function Welcome() {
       {uploading && <div>Loading...</div>}
       {uploadError && <div style={{ color: 'red' }}>{uploadError}</div>}
       {uploadSuccess && <div style={{ color: 'green' }}>{uploadSuccess}</div>}
+      
       <input
         type="text"
         value={searchQuery}
@@ -220,34 +189,32 @@ function Welcome() {
         placeholder="Search Files"
       />
       <ul>
-     
         {filteredFiles.map((file, index) => (
           <li key={index}>
             {!file.filename.endsWith('.txt') && (
-                          
               <React.Fragment>
-                 <div className="bored">
-                 <p>{file.description}</p>
-            {file.replies && (
-              <ul style={{color: '#ccc'}}>
-                {file.replies.map((reply, replyIndex) => (
-                  <li key={replyIndex}>{reply}</li>
-                ))}
-              </ul>
-            )}
-                {file.showReply ? (
-                  <div className="replycontainer">
-                    <textarea
-                      value={file.replyText || ""}
-                      onChange={(e) => {
-                        const updatedFiles = [...files];
-                        updatedFiles[index].replyText = e.target.value;
-                        setFiles(updatedFiles);
-                      }}
-                      placeholder="Enter your reply..."
-                    />
-                    <button onClick={() => handleReplySubmit(index, file.filename)}>Submit</button>
-                  </div>
+                <div className="bored">
+                  <p>{file.description}</p>
+                  {file.replies && (
+                    <ul style={{color: '#ccc'}}>
+                      {file.replies.map((reply, replyIndex) => (
+                        <li key={replyIndex}>{reply}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {file.showReply ? (
+                    <div className="replycontainer">
+                      <textarea
+                        value={file.replyText || ""}
+                        onChange={(e) => {
+                          const updatedFiles = [...files];
+                          updatedFiles[index].replyText = e.target.value;
+                          setFiles(updatedFiles);
+                        }}
+                        placeholder="Enter your reply..."
+                      />
+                      <button onClick={() => handleReplySubmit(index, file.filename)}>Submit</button>
+                    </div>
                 ) : (
                   <button className="buttonicon" onClick={() => handleReply(index)}>
                     <FontAwesomeIcon icon={faReply} className="icon" />
