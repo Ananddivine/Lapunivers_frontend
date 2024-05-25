@@ -1,0 +1,124 @@
+.contact-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px; 
+    background: #fff;
+  
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.contact-box form{
+    padding: 20px 30px;
+    margin: 20px 20px;
+}
+form input{
+    padding: 5px 10px;
+    margin: 3px;
+    outline: none;
+  
+}
+form input::placeholder{
+    color: #989797;
+}
+.contact-box form button{
+    margin: 10px;
+   outline: none;
+   border: 1px solid #ccc;
+   border-radius: 6px;
+   padding: 9px 10px;
+   background: #000000;
+   color: #fff;
+}
+
+.contact-box form button:hover{
+    background: #007BFF;
+    color: #000000;
+}
+.spinner-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.832); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; 
+  }
+  
+  .spinner {
+    border: 4px solid rgb(255, 255, 255);
+    border-radius: 50%;
+    border-top: 4px solid #007BFF;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  #loading-spinner.hidden {
+    display: none;
+  }
+  
+  .error-message {
+    background-color: #ff0404; 
+    color: #ffff;
+  }
+  
+  .success-message {
+    background-color: #00ff00; 
+    color: #000000;
+  }
+  
+  .message {
+    position: fixed;
+    top: 90px;
+    right: 10px;
+    border: 1px solid #cccccc;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    overflow: hidden; 
+  }
+  .hidden{
+    display: none;
+  }
+
+  .message::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #ffff;
+    animation: countdown 5s linear forwards; 
+  }
+  
+  @keyframes countdown {
+    0% {
+        width: 100%; 
+    }
+    100% {
+        width: 0; 
+    }
+  }
+  @media screen and (max-width: 620px) {
+    .message{
+        top: 2px;
+        z-index: 8888;
+        right: 10px;
+        font-size: 12px;
+    }
+  
+  }

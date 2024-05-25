@@ -1,0 +1,91 @@
+
+.welcome {
+    text-align: center; /* Center the content horizontally */
+  }
+  .welcome ul{
+    list-style: none;
+  }
+  
+  .bored {
+    list-style: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    width: 50%; /* Adjust the width as per your preference */
+    margin: 20px auto; 
+    border: 1px solid #ccc;
+    border-radius: 20px;
+  }
+  .welcome textarea{
+    outline: none;
+  }
+  .replycontainer button{
+    outline: none;
+    margin: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #111522;
+    color: aliceblue;
+    padding: 10px 20px;
+
+  }
+  .welcome a{
+    color: aqua;
+  }
+  .welcome .icon{
+    font-size: 15px;
+    outline: none;
+    color: aqua;
+
+  }
+  .buttonicon {
+    background-color: transparent; /* Set background color to transparent */
+    border: 1px solid #ccc; /* Add a solid border with the desired color */
+    border-radius: 5px; /* Add border-radius for rounded corners */
+    padding: 5px 5px;
+    margin: 1px 10px; 
+    color: #ccc;
+   
+  }
+  
+  .buttonicon:hover {
+    background-color: rgb(0, 0, 0);
+  
+  }
+  
+  .icon:hover {
+    color: #ffffff; /* Set icon color */
+    font-size: 15px; /* Set icon size */
+  }
+.welcome input{
+    outline: none;
+
+}
+.uploadbutton{
+    outline: none!important;
+    margin: auto 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-weight: 500;
+}
+.uploadbutton:hover{
+    background: #111522;
+    color: #ffffff;
+}
+.reply-container textarea{
+    outline: NONE;
+
+}
+.replycontainer button:hover{
+    background: #ffffff;
+    color: #111522;
+}
+.bored p{
+    font-size: 23px;
+    color: #ffffff;
+    font-weight: 700;
+}
+.welcome p{
+font-weight: 700;
+font-size: 20px;
+}
