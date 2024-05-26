@@ -107,3 +107,6 @@ margin-top: -3px!important;
 .search::placeholder{
   font-size: 12px;
 }
+#navbarDropdown{
+color: #fff!important;
+}

@@ -17,8 +17,6 @@ function Welcome() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Removed the declaration of fileData
-
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -27,7 +25,7 @@ function Welcome() {
     const description = file.description || "";
     const filename = file.filename || "";
     const replies = file.replies || [];
-    const replyTexts = replies.join(" ").toLowerCase(); 
+    const replyTexts = replies.map(reply => reply.text).join(" ").toLowerCase();
     return (
       description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -48,7 +46,7 @@ function Welcome() {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);
-    } 
+    }
   }, []);
 
   useEffect(() => {
@@ -56,7 +54,7 @@ function Welcome() {
       const updatedUsername = localStorage.getItem('username');
       if (updatedUsername) {
         setUsername(updatedUsername);
-      } 
+      }
     };
 
     window.addEventListener('storage', handleStorageChange);
@@ -137,6 +135,7 @@ function Welcome() {
 
   const handleReplySubmit = (index, filename) => {
     if (files[index].replyText && files[index].replyText.trim() !== "") {
+      // Prepend the username to the reply text
       const replyWithUsername = `${username} :-  ${files[index].replyText}`;
 
       console.log('Reply text:', replyWithUsername);
@@ -148,41 +147,67 @@ function Welcome() {
         replyText: "",
         showReply: false
       };
-      updatedFiles[index].replies.push(replyWithUsername);
+      updatedFiles[index].replies.push({ user: username, text: files[index].replyText });
       console.log('Updated files:', updatedFiles);
 
       setFiles(updatedFiles);
 
-      const formData = new FormData();
-      formData.append('reply', replyWithUsername);
-      console.log('Form data:', formData);
+      const replyData = { reply: replyWithUsername };
+      console.log('Reply data:', replyData);
 
-      setTimeout(() => {
-        axios.post(`${baseURL}/files/${filename}/replies`, replyWithUsername)
-          .then(_response => {
-            console.log('Reply submitted successfully:', replyWithUsername);
-          })
-          .catch(error => {
-            console.error('Error submitting reply:', error);
-          });
-      }, 100);
+      axios.post(`${baseURL}/files/${filename}/replies`, replyData)
+        .then(_response => {
+          console.log('Reply submitted successfully:', replyWithUsername);
+        })
+        .catch(error => {
+          console.error('Error submitting reply:', error);
+        });
     } else {
       alert("Please enter a reply.");
     }
   };
 
+  useEffect(() => {
+    axios.get(`${baseURL}/files`)
+      .then(response => {
+        setFiles(response.data);
+        // Fetch reply text for each file
+        response.data.forEach(file => {
+          axios.get(`${baseURL}/files/${file.filename}/replies`)
+            .then(replyResponse => {
+              // Update files state with reply text
+              setFiles(prevFiles => prevFiles.map(prevFile => {
+                if (prevFile.filename === file.filename) {
+                  return {
+                    ...prevFile,
+                    replies: replyResponse.data
+                  };
+                }
+                return prevFile;
+              }));
+            })
+            .catch(error => {
+              console.error('Error fetching replies:', error);
+            });
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching files:', error);
+      });
+  }, [baseURL]);
+
   return (
     <div className="welcome">
       <h1>{`WELCOME ${username}`}</h1>
       <p>Upload Bios File</p>
-      <input style={{color: 'aqua'}} type="file" onChange={handleFileChange} disabled={uploading} />
-      <input type="text" value={description} onChange={handleDescriptionChange} placeholder="Description" disabled={uploading} />
+      <input name="file" style={{color: 'aqua'}} type="file" onChange={handleFileChange} disabled={uploading} />
+      <input name="discribe" type="text" value={description} onChange={handleDescriptionChange} placeholder="Description" disabled={uploading} />
       <button className="uploadbutton" onClick={handleUpload} disabled={uploading}>Upload File</button>
       {uploading && <div>Loading...</div>}
       {uploadError && <div style={{ color: 'red' }}>{uploadError}</div>}
       {uploadSuccess && <div style={{ color: 'green' }}>{uploadSuccess}</div>}
-      
       <input
+        name="seaches"
         type="text"
         value={searchQuery}
         onChange={handleSearch}
@@ -198,7 +223,7 @@ function Welcome() {
                   {file.replies && (
                     <ul style={{color: '#ccc'}}>
                       {file.replies.map((reply, replyIndex) => (
-                        <li key={replyIndex}>{reply}</li>
+                        <li key={replyIndex}><strong>{reply.user}</strong>: {reply.text}</li>
                       ))}
                     </ul>
                   )}
@@ -215,21 +240,19 @@ function Welcome() {
                       />
                       <button onClick={() => handleReplySubmit(index, file.filename)}>Submit</button>
                     </div>
-                ) : (
-                  <button className="buttonicon" onClick={() => handleReply(index)}>
-                    <FontAwesomeIcon icon={faReply} className="icon" />
-                  </button>
-                )}
-                <a href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
-                  {file.filename}
-                </a>     </div>
+                  ) : (
+                    <button className="buttonicon" onClick={() => handleReply(index)}>
+                      <FontAwesomeIcon icon={faReply} className="icon" />
+                    </button>
+                  )}
+                  <a href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
+                    {file.filename}
+                  </a>
+                </div>
               </React.Fragment>
             )}
-              
           </li>
-       
         ))}
-   
       </ul>
     </div>
   );
