@@ -25,7 +25,7 @@ function Welcome() {
     const description = file.description || "";
     const filename = file.filename || "";
     const replies = file.replies || [];
-    const replyTexts = replies.map(reply => reply.text).join(" ").toLowerCase();
+    const replyTexts = replies.join(" ").toLowerCase();
     return (
       description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -135,9 +135,7 @@ function Welcome() {
 
   const handleReplySubmit = (index, filename) => {
     if (files[index].replyText && files[index].replyText.trim() !== "") {
-      // Prepend the username to the reply text
       const replyWithUsername = `${username} :-  ${files[index].replyText}`;
-
       console.log('Reply text:', replyWithUsername);
 
       const updatedFiles = [...files];
@@ -147,15 +145,12 @@ function Welcome() {
         replyText: "",
         showReply: false
       };
-      updatedFiles[index].replies.push({ user: username, text: files[index].replyText });
+      updatedFiles[index].replies.push(replyWithUsername);
       console.log('Updated files:', updatedFiles);
 
       setFiles(updatedFiles);
 
-      const replyData = { reply: replyWithUsername };
-      console.log('Reply data:', replyData);
-
-      axios.post(`${baseURL}/files/${filename}/replies`, replyData)
+      axios.post(`${baseURL}/files/${filename}/replies`, { reply: replyWithUsername })
         .then(_response => {
           console.log('Reply submitted successfully:', replyWithUsername);
         })
@@ -171,11 +166,9 @@ function Welcome() {
     axios.get(`${baseURL}/files`)
       .then(response => {
         setFiles(response.data);
-        // Fetch reply text for each file
         response.data.forEach(file => {
           axios.get(`${baseURL}/files/${file.filename}/replies`)
             .then(replyResponse => {
-              // Update files state with reply text
               setFiles(prevFiles => prevFiles.map(prevFile => {
                 if (prevFile.filename === file.filename) {
                   return {
@@ -186,13 +179,11 @@ function Welcome() {
                 return prevFile;
               }));
             })
-            .catch(error => {
-              console.error('Error fetching replies:', error);
+            .catch(() => {
             });
         });
       })
-      .catch(error => {
-        console.error('Error fetching files:', error);
+      .catch(() => {
       });
   }, [baseURL]);
 
@@ -223,7 +214,7 @@ function Welcome() {
                   {file.replies && (
                     <ul style={{color: '#ccc'}}>
                       {file.replies.map((reply, replyIndex) => (
-                        <li key={replyIndex}><strong>{reply.user}</strong>: {reply.text}</li>
+                        <li key={replyIndex}>{reply}</li>
                       ))}
                     </ul>
                   )}
