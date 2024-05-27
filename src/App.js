@@ -13,6 +13,7 @@ import Welcome from './Welcome';
 import ForgotPassword from './ForgotPassword';
 import AdminPanel from './AdminPanel';
 import ProductDetail from './ProductDetail';
+import Fechingfilesfromrender from './Fechingfilesfromrender';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path='/admin' element={<AdminPanel />} />
           <Route path='/product/:id' element={<ProductDetail />} />
           <Route path='/*' element={<Home />} />
+          <Route path='/fechingfilesfromrender' element={<Fechingfilesfromrender />} />
         </Routes>
       </div>
     </Router>
