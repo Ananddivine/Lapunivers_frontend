@@ -1,91 +1,143 @@
-
 .welcome {
-    text-align: center; /* Center the content horizontally */
-  }
-  .welcome ul{
-    list-style: none;
-  }
-  
-  .bored {
-    list-style: none; /* Remove default list styling */
-    padding: 0; /* Remove default padding */
-    margin: 0; /* Remove default margin */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    width: 50%; /* Adjust the width as per your preference */
-    margin: 20px auto; 
-    border: 1px solid #ccc;
-    border-radius: 20px;
-  }
-  .welcome textarea{
-    outline: none;
-  }
-  .replycontainer button{
-    outline: none;
-    margin: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background: #111522;
-    color: aliceblue;
-    padding: 10px 20px;
-
-  }
-  .welcome a{
-    color: aqua;
-  }
-  .welcome .icon{
-    font-size: 15px;
-    outline: none;
-    color: aqua;
-
-  }
-  .buttonicon {
-    background-color: transparent; /* Set background color to transparent */
-    border: 1px solid #ccc; /* Add a solid border with the desired color */
-    border-radius: 5px; /* Add border-radius for rounded corners */
-    padding: 5px 5px;
-    margin: 1px 10px; 
-    color: #ccc;
-   
-  }
-  
-  .buttonicon:hover {
-    background-color: rgb(0, 0, 0);
-  
-  }
-  
-  .icon:hover {
-    color: #ffffff; /* Set icon color */
-    font-size: 15px; /* Set icon size */
-  }
+  text-align: center; 
+}
 .welcome input{
-    outline: none;
-
+  font-weight: 500;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.614);
+  border: 1px solid #cccc;
+  padding: 4px 5px;
+  margin: 0px 4px;
+  outline: none;
 }
-.uploadbutton{
-    outline: none!important;
-    margin: auto 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-weight: 500;
-}
-.uploadbutton:hover{
-    background: #111522;
-    color: #ffffff;
-}
-.reply-container textarea{
-    outline: NONE;
-
-}
-.replycontainer button:hover{
-    background: #ffffff;
-    color: #111522;
-}
-.bored p{
-    font-size: 23px;
-    color: #ffffff;
-    font-weight: 700;
+.welcome ::placeholder{
+  color: #000;
 }
 .welcome p{
-font-weight: 700;
-font-size: 20px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+}
+.welcome ul {
+  list-style: none;
+}
+.welcome {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.292), rgba(0, 0, 0, 0.269)), url('./images/bg.jpg'); /* Replace 'background-image.jpg' with your background image */
+  background-size: cover;
+  background-position: 100%;
+  background-attachment: fixed;
+  color: #000;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+.bored {
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  width: 50%; /* Adjust the width as per your preference */
+  margin: 20px auto; 
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.2); /* White background with some transparency */
+  backdrop-filter: blur(10px); /* Blur effect for the frosted glass */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  color: #000;
+}
+.welcome textarea {
+  outline: none;
+}
+.replycontainer button {
+  outline: none;
+  margin: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #111522;
+  padding: 10px 20px;
+}
+
+
+.welcome .icon {
+  font-size: 15px;
+  outline: none;
+  color: #2a0000;
+}
+.buttonicon {
+  background-color: transparent; /* Set background color to transparent */
+  border: 1px solid #ccc; /* Add a solid border with the desired color */
+  border-radius: 5px; /* Add border-radius for rounded corners */
+  padding: 5px 5px;
+  margin: 5px 10px; 
+  color: #000;
+  font-size: 10px;
+  font-weight: 600;
+}
+.buttonicon:hover{
+  background: #ffffff64;
+}
+
+.icon:hover {
+  color: #ffffff; /* Set icon color */
+  font-size: 15px; /* Set icon size */
+}
+.welcome input {
+  outline: none;
+}
+.uploadbutton {
+  outline: none!important;
+  margin: auto 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-weight: 500;
+  background: #ffffff91;
+}
+.uploadbutton:hover {
+  background: #111522;
+  color: #ffffff;
+}
+.reply-container textarea {
+  outline: NONE;
+}
+.replysubmit{
+background: #fefdfd67!important;
+
+}
+
+.replysubmit:hover{
+  background: #fefdfd27!important;
+  font-size: 13px;
+  font-weight: 700;
+  }
+
+.bored p {
+  font-size: 23px;
+  color: #ffffff;
+  font-weight: 700;
+}
+.welcome p {
+  font-weight: 700;
+  font-size: 20px;
+}
+.downloadsection{
+  color: #2a0000;
+  text-decoration: none;
+  display: inline-block;
+  max-width: 100%; 
+  text-overflow: ellipsis; 
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 900;
+}
+.filechoos{
+  color: #2a0000;
+  font-size: 15px;
+  font-weight: 800;
+  outline: none;
+  border: none!important;
+}
+.ico{
+  color: #ccc;
+  font-size: 16px;
 }

@@ -3,17 +3,15 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors'); 
-const bodyParser = require('body-parser'); // Add this line
-
+const bodyParser = require('body-parser'); 
 const app = express();
-const PORT = 5001; // Change this to the desired port number
+const PORT = 5001; 
  
 
 app.use(cors());
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: true })); // Add this line
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Set up multer for handling file uploads
 const storage = multer.diskStorage({
     destination: function (_req, _file, cb) {
         cb(null, 'public/upload/');

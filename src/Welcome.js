@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faReply } from "@fortawesome/free-solid-svg-icons";
+import { faQuoteLeft, faMicrochip } from "@fortawesome/free-solid-svg-icons";
 import './Welcome.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -191,7 +191,7 @@ function Welcome() {
     <div className="welcome">
       <h1>{`WELCOME ${username}`}</h1>
       <p>Upload Bios File</p>
-      <input name="file" style={{color: 'aqua'}} type="file" onChange={handleFileChange} disabled={uploading} />
+      <input className="filechoos" name="file"  type="file" onChange={handleFileChange} disabled={uploading} />
       <input name="discribe" type="text" value={description} onChange={handleDescriptionChange} placeholder="Description" disabled={uploading} />
       <button className="uploadbutton" onClick={handleUpload} disabled={uploading}>Upload File</button>
       {uploading && <div>Loading...</div>}
@@ -229,15 +229,15 @@ function Welcome() {
                         }}
                         placeholder="Enter your reply..."
                       />
-                      <button onClick={() => handleReplySubmit(index, file.filename)}>Submit</button>
+                      <button className="replysubmit" onClick={() => handleReplySubmit(index, file.filename)}>Submit</button>
                     </div>
                   ) : (
-                    <button className="buttonicon" onClick={() => handleReply(index)}>
-                      <FontAwesomeIcon icon={faReply} className="icon" />
+                      <button className="buttonicon" onClick={() => handleReply(index)} title="Reply">
+                        <FontAwesomeIcon icon={faQuoteLeft} className="icon" /> Reply
                     </button>
-                  )}
-                  <a href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
-                    {file.filename}
+                  )} 
+                  <a className="downloadsection" href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
+                  <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
                   </a>
                 </div>
               </React.Fragment>

@@ -44,9 +44,12 @@ body {
 
   .navbar{
     background: #0e1015!important;
+    padding: 4px 6px;
+
   }
   .nav-link{
     color: #fff!important;
+    font-size: 14px;
   }
   .nav-link:hover{
     color: #07fffb!important;
@@ -55,6 +58,7 @@ body {
   .btn{
     border: 1px solid #fff;
     color: #fff;
+    font-size: 12px;
   }
   .btn:hover{
     color: #0e1015;
@@ -72,6 +76,7 @@ margin-top: -3px!important;
 
   }
 
+
   
 
   .form-control:hover{
@@ -85,7 +90,12 @@ margin-top: -3px!important;
     border-radius: 8px;
     box-sizing: border-box;
     box-shadow: none!important;
+
   }
+#nav-bar input{
+  padding: 3px 5px;
+  margin: 4px 5px;
+}
   .form-control:hover::placeholder{
     color: #ccc!important;
   }
