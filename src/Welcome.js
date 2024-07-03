@@ -187,8 +187,14 @@ function Welcome() {
       });
   }, [baseURL]);
 
+  const handelLogout = () =>{
+    localStorage.removeItem('username');
+    navigate('/Home')
+  }
+
   return (
     <div className="welcome">
+     <button className="logout" onClick={handelLogout}>LogOut</button>
       <h1>{`WELCOME ${username}`}</h1>
       <p>Upload Bios File</p>
       <input className="filechoos" name="file"  type="file" onChange={handleFileChange} disabled={uploading} />

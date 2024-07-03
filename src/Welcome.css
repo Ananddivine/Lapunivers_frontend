@@ -141,3 +141,18 @@ background: #fefdfd67!important;
   color: #ccc;
   font-size: 16px;
 }
+.logout{
+  display: flex;
+  float: right;
+  font-size: 14px;
+  font-weight: 300;
+  background: rgba(255, 255, 255, 0.614);
+  border: 1px solid #ccc;
+  margin: 2px 4px;
+  border-radius: 5px;
+  padding: 6px 7px;
+}
+.logout:hover{
+ cursor: pointer;
+ background: rgba(255, 255, 255, 0.299);
+}
