@@ -120,3 +120,18 @@ margin-top: -3px!important;
 #navbarDropdown{
 color: #fff!important;
 }
+.notification-container{
+  margin-left: 30px;
+  margin-top: 2px;
+  align-items: center;
+  color: #fff;
+}
+.notification-container:hover{
+  color: #ff0000;
+  cursor: pointer;
+}
+
+
+
+
+

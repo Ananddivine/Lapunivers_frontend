@@ -36,6 +36,7 @@ const Login = () => {
       console.log(json);
       if (json.success) {
         localStorage.setItem('username', json.name);
+        localStorage.setItem('email', json.email);
         navigate(`/Welcome?name=${json.name}`);
       } else {
         document.getElementById("result").innerHTML = json.message;

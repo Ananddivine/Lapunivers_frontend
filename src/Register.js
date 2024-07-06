@@ -61,6 +61,7 @@ const Register = () => {
       console.log(json);
       if (json.success) {
         localStorage.setItem('username', json.name);
+        localStorage.setItem('email', json.email);
         const storageChangeEvent = new Event('storage');
         window.dispatchEvent(storageChangeEvent);
         navigate(`/welcome?name=${json.name}`);

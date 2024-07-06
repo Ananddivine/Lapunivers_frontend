@@ -1,0 +1,81 @@
+.notifications{
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.151), rgba(0, 0, 0, 0.169)), url('./images/river.jpg'); 
+  background-size: cover;
+  background-position: 100%;
+  background-attachment: fixed;
+  color: #000;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  z-index: 9999;
+  list-style: none; 
+}
+.file-item{
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    width: 50%; /* Adjust the width as per your preference */
+    margin: 20px auto; 
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.295); /* White background with some transparency */
+    backdrop-filter: blur(10px); /* Blur effect for the frosted glass */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    color: #000;
+    text-align:center;
+    align-items: left;
+}
+.file-item a{
+    color: #830000;
+    font-size: 16px;
+    font-weight: 600;
+}
+.file-item a:hover{
+    outline: none;
+    text-decoration: none;
+    color: #000;
+}
+.file-item ul{
+    list-style: none;
+}
+ul{
+    list-style: none;
+}
+
+.reply-button {
+    outline: none;
+    font-size: 15px;
+    margin: 4px 6px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #ffffff7b;
+    padding: 4px 5px;
+  }
+  .reply-button:hover{
+background: #ccc;
+  }
+
+  .reply-container textarea {
+    outline: NONE;
+  }
+
+  .submitreply{
+  background: #fefdfd67;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #ccc;
+  margin: 4px 8px;
+
+  }
+  
+  .submitreply:hover{
+    background: #fefdfd27;
+    font-size: 13px;
+    font-weight: 700;
+    }
+
+.ico{
+    color: #000;
+}
+  

@@ -22,7 +22,7 @@
   list-style: none;
 }
 .welcome {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.292), rgba(0, 0, 0, 0.269)), url('./images/bg.jpg'); /* Replace 'background-image.jpg' with your background image */
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.292), rgba(0, 0, 0, 0.269)), url('./images/bg.jpg'); 
   background-size: cover;
   background-position: 100%;
   background-attachment: fixed;
@@ -30,6 +30,7 @@
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  z-index: 9999;
 }
 .bored {
   list-style: none; 
@@ -40,7 +41,7 @@
   margin: 20px auto; 
   border: 1px solid transparent;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.2); /* White background with some transparency */
+  background: rgba(255, 255, 255, 0.393); /* White background with some transparency */
   backdrop-filter: blur(10px); /* Blur effect for the frosted glass */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   color: #000;
@@ -127,7 +128,7 @@ background: #fefdfd67!important;
   text-overflow: ellipsis; 
   white-space: nowrap;
   overflow: hidden;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 900;
 }
 .filechoos{

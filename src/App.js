@@ -14,6 +14,8 @@ import ForgotPassword from './ForgotPassword';
 import AdminPanel from './AdminPanel';
 import ProductDetail from './ProductDetail';
 import Fechingfilesfromrender from './Fechingfilesfromrender';
+import Notifications from './Notifications';
+
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
           <Route path='/Register' element={<Register />} />
           <Route path='/Contact' element={<Contact />} />
           <Route path='/Welcome' element={<Welcome />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path='/ForgotPassword' element={<ForgotPassword />} />
           <Route path='/admin' element={<AdminPanel />} />
           <Route path='/product/:id' element={<ProductDetail />} />

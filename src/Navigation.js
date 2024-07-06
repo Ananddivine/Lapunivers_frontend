@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 import './App.css'
 
 function Navigation() {
@@ -31,8 +33,7 @@ function Navigation() {
     };
 
     const handleSearchChange = (event) => {
-        const value = event.target.value;
-        setSearchTerm(value);
+        setSearchTerm(event.target.value);
     };
 
     const handleSearchSubmit = (event) => {
@@ -41,7 +42,6 @@ function Navigation() {
     };
 
     useEffect(() => {
-        // Retrieve username from local storage on component mount
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
             setUsername(storedUsername);
@@ -73,6 +73,14 @@ function Navigation() {
         }
     }, [location]);
 
+    const handleNotificationClick = () => {
+        if (username) {
+          navigate('/notifications');
+        } else {
+          navigate('/Login');
+        }
+      };
+
     return (
         <section id="nav-bar">
             <nav className="navbar navbar-expand-lg navbar-dark bg-light fixed-top">
@@ -90,6 +98,16 @@ function Navigation() {
                         )}
                     </p>
                 </div>
+                <div className="notification-container">
+                        {username && (
+                        <div className="notification-icon" onClick={handleNotificationClick}>
+                                   <FontAwesomeIcon className="iconss" icon={faBell} />
+                        </div>
+                        )}
+                    </div>
+
+                
+
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -97,7 +115,8 @@ function Navigation() {
                 >
                     <span className="navbar-toggler-icon"><i className="fa fa-2x fa-bars" aria-hidden="true"></i></span>
                 </button>
-
+                
+                    
                 <div className={`collapse navbar-collapse ${isNavbarOpen ? 'show' : ''}`} id="navbarSupportedContent">
                     <ul className="navbar-nav ml-auto">
                         <li className="nav-item">
@@ -141,6 +160,7 @@ function Navigation() {
                         </li>
                     </ul>
                 </div>
+               
             </nav>
         </section>
     );
