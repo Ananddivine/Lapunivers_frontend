@@ -77,7 +77,7 @@ function Navigation() {
         if (username) {
           navigate('/Notifications');
         } else {
-          navigate('/Login');
+          navigate('/Home');
         }
       };
 
