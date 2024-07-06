@@ -75,7 +75,7 @@ function Navigation() {
 
     const handleNotificationClick = () => {
         if (username) {
-          navigate('/notifications');
+          navigate('/Notifications');
         } else {
           navigate('/Login');
         }
