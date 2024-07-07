@@ -131,7 +131,29 @@ color: #fff!important;
   cursor: pointer;
 }
 
+.navlinks:hover{
+text-decoration: none;
+}
 
 
 
 
+/* App.css */
+
+.notification-icon {
+  cursor: pointer;
+}
+
+.notification-icon.new-notification .iconss {
+  color: red; 
+  animation: bell-animation 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes bell-animation {
+  0% {
+      transform: scale(1);
+  }
+  100% {
+      transform: scale(1.2);
+  }
+}

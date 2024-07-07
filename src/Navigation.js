@@ -11,6 +11,7 @@ function Navigation() {
     const [searchTerm, setSearchTerm] = useState('');
     const location = useLocation();
     const [isNavbarOpen, setNavbarOpen] = useState(false);
+    const [hasNewNotification, setHasNewNotification] = useState(false);
 
     const handleNavbarToggle = () => {
         setNavbarOpen(!isNavbarOpen);
@@ -73,13 +74,25 @@ function Navigation() {
         }
     }, [location]);
 
+    useEffect(() => {
+        // Placeholder for logic to check for new notifications
+        const checkForNewNotifications = () => {
+            // Simulate a new notification
+            setTimeout(() => {
+                setHasNewNotification(true);
+            }, 5000);
+        };
+        checkForNewNotifications();
+    }, []);
+
     const handleNotificationClick = () => {
         if (username) {
-          navigate('/Notifications');
+            navigate('/Notifications');
         } else {
-          navigate('/Home');
+            navigate('/Home');
         }
-      };
+        setHasNewNotification(false);
+    };
 
     return (
         <section id="nav-bar">
@@ -90,21 +103,21 @@ function Navigation() {
                     </div>
                 </NavLink>
                 <div className="user">
-                    <p style={{ fontWeight: 800, marginLeft: '30px', cursor: 'pointer' }} id="username-display" onClick={handleWelcomeClick}>
+                    <p style={{ fontWeight: 800, marginLeft: '30px', cursor: 'pointer'}} id="username-display" onClick={handleWelcomeClick}>
                         {username ? (
-                            <NavLink to="/welcome" onClick={handleLinkClick}>{`Hi ${username}`}</NavLink>
+                            <NavLink className="navlinks" to="/welcome" onClick={handleLinkClick}>{`Hi ${username}`}</NavLink>
                         ) : (
                             <NavLink to="/welcome">{`${username || ''}`}</NavLink>
                         )}
                     </p>
                 </div>
                 <div className="notification-container">
-                        {username && (
-                        <div className="notification-icon" onClick={handleNotificationClick}>
-                                   <FontAwesomeIcon className="iconss" icon={faBell} />
+                    {username && (
+                        <div className={`notification-icon ${hasNewNotification ? 'new-notification' : ''}`} onClick={handleNotificationClick}>
+                            <FontAwesomeIcon className="iconss" icon={faBell} />
                         </div>
-                        )}
-                    </div>
+                    )}
+                </div>
 
                 
 
