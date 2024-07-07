@@ -31,7 +31,7 @@ const Fechingfilesfromrender = () => {
     
 
     useEffect(() => {
-        axios.get('http://localhost:5000/files')
+        axios.get('https://backend-1-la1d.onrender.com/files')
             .then(response => {
                 setFiles(response.data);
             })
@@ -41,7 +41,7 @@ const Fechingfilesfromrender = () => {
     }, []);
 
     const fetchReplies = (filename) => {
-        axios.get(`http://localhost:5000/files/${filename}/replies`)
+        axios.get(`https://backend-1-la1d.onrender.com/files/${filename}/replies`)
             .then(response => {
                 console.log(`Fetched replies for ${filename}:`, response.data);
                 setReplies(prevReplies => ({
@@ -55,7 +55,7 @@ const Fechingfilesfromrender = () => {
     };
 
     const deleteFile = (filename) => {
-        axios.delete(`http://localhost:5000/files/${filename}`)
+        axios.delete(`https://backend-1-la1d.onrender.com/files/${filename}`)
             .then(response => {
                 console.log(response.data);
                 setFiles(prevFiles => prevFiles.filter(file => file.filename !== filename));
@@ -71,7 +71,7 @@ const Fechingfilesfromrender = () => {
     };
 
     const updateFile = (filename, updatedContent) => {
-        axios.put(`http://localhost:5000/files/${filename}`, { updatedContent })
+        axios.put(`https://backend-1-la1d.onrender.com/files/${filename}`, { updatedContent })
             .then(response => {
                 console.log(response.data);
                 setFiles(prevFiles => 
@@ -87,7 +87,7 @@ const Fechingfilesfromrender = () => {
     };
 
     const deleteReply = (filename) => {
-        axios.delete(`http://localhost:5000/files/${filename}/replies`)
+        axios.delete(`https://backend-1-la1d.onrender.com/files/${filename}/replies`)
             .then(response => {
                 console.log(response.data);
                 setReplies(prevReplies => {
@@ -102,7 +102,7 @@ const Fechingfilesfromrender = () => {
     };
 
     const handleUpdateReply = (filename, updatedReply) => {
-        axios.put(`http://localhost:5000/files/${filename}/replies`, { updatedReply })
+        axios.put(`https://backend-1-la1d.onrender.com/files/${filename}/replies`, { updatedReply })
             .then(response => {
                 console.log(response.data);
                 fetchReplies(filename);
@@ -128,7 +128,7 @@ const Fechingfilesfromrender = () => {
                   
                     <li key={file.filename}>
                           <div className="bored">
-                        <a href={`http://localhost:5000/upload/${file.filename}`} target="_blank" rel="noopener noreferrer">
+                        <a href={`https://backend-1-la1d.onrender.com/upload/${file.filename}`} target="_blank" rel="noopener noreferrer">
                             {file.filename}
                         </a>
                         <p>{file.description}</p>

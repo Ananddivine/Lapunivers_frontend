@@ -13,7 +13,7 @@ function Notifications() {
   const [replies, setReplies] = useState({});
   const [activeReplyField, setActiveReplyField] = useState(null);
   const navigate = useNavigate();
-  const baseURL = 'http://localhost:5000';
+  const baseURL = 'https://backend-1-la1d.onrender.com';
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e) => {
