@@ -7,8 +7,8 @@
 
   function Welcome() {
    const [username, setUsername] = useState("");
-  const [email, setEmail] = useState(""); // Add state for email
-  const [file, setFile] = useState(null); // Changed from [] to null
+  const [email, setEmail] = useState("");  
+  const [file, setFile] = useState(null);  
   const [description, setDescription] = useState("");
   const baseURL = 'https://backend-1-la1d.onrender.com';
   const [files, setFiles] = useState([]);
@@ -36,12 +36,12 @@
 
     useEffect(() => {
       const storedUsername = localStorage.getItem('username');
-      const storedEmail = localStorage.getItem('email'); // Retrieve email from local storage
+      const storedEmail = localStorage.getItem('email');  
       if (!storedUsername) {
         navigate('/Login');
       } else {
         setUsername(storedUsername);
-        setEmail(storedEmail); // Set email state
+        setEmail(storedEmail);  
       }
     }, [navigate]);
   
@@ -58,8 +58,8 @@
       const formData = new FormData();
       formData.append('uploadedFile', file);
       formData.append('description', description);
-      formData.append('username', username); // Add username to formData
-      formData.append('email', email); // Add email to formData
+      formData.append('username', username);  
+      formData.append('email', email);  
   
       try {
         await axios.post(`${baseURL}/upload`, formData);
@@ -201,17 +201,17 @@
               <div className="bored">
                 <p>{file.description}</p>
                 {file.replies && (
-                  <ul style={{color: '#ccc'}}>
+                  <ul style={{color: '#fff'}}>
                     {file.replies.map((reply, replyIndex) => (
                       <li key={replyIndex}>{reply}</li>
                     ))}
                   </ul>
                 )}
                 {file.showReply ? (
-                  <div className="replycontainer">
+                  <div className="replycontainer">    
                     <textarea
                       value={file.replyText || ""}
-                      onChange={(e) => {
+                      onChange={(e) => {   
                         const updatedFiles = [...files];
                         updatedFiles[index].replyText = e.target.value;
                         setFiles(updatedFiles);

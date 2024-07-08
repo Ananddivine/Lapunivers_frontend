@@ -35,7 +35,7 @@ function Notifications() {
     const storedUsername = localStorage.getItem('username');
     const storedEmail = localStorage.getItem('email');
     if (!storedUsername || !storedEmail) {
-      navigate('/Login');
+      navigate('/Register');
     } else {
       setUsername(storedUsername);
       setEmail(storedEmail);

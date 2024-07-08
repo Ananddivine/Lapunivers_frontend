@@ -20,7 +20,7 @@ function Product() {
   console.log('Filtered Models:', filteredModels);
 
   return (
-    <div>
+    <div className='products'>
       <h1>WELCOME TO LAPUNIVERSE</h1>
       <div className='row'>
         {searchQuery && <SearchResults searchResults={filteredModels} searchParams={searchParams} />}

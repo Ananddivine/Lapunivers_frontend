@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
-import './App.css'
+import logos from "./images/Logolapy.png";
+import './App.css';
 
 function Navigation() {
     const [showDropdown, setDropdown] = useState(false);
@@ -75,9 +76,9 @@ function Navigation() {
     }, [location]);
 
     useEffect(() => {
-        // Placeholder for logic to check for new notifications
+        
         const checkForNewNotifications = () => {
-            // Simulate a new notification
+           
             setTimeout(() => {
                 setHasNewNotification(true);
             }, 5000);
@@ -99,8 +100,7 @@ function Navigation() {
             <nav className="navbar navbar-expand-lg navbar-dark bg-light fixed-top">
                 <NavLink to="/">
                     <div className="logo">
-                        <i className="fa fa-laptop" style={{ fontSize: '30px', color: '#fff' }}></i>
-                    </div>
+                    <img src={logos} alt="Logo" style={{ width: '50px', height: '50px' }} />                     </div>
                 </NavLink>
                 <div className="user">
                     <p style={{ fontWeight: 800, marginLeft: '30px', cursor: 'pointer'}} id="username-display" onClick={handleWelcomeClick}>

@@ -36,14 +36,14 @@
   list-style: none; 
   padding: 0; 
   margin: 0; 
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-  width: 50%; /* Adjust the width as per your preference */
+  box-sizing: border-box;  
+  width: 50%;  
   margin: 20px auto; 
   border: 1px solid transparent;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.393); /* White background with some transparency */
-  backdrop-filter: blur(10px); /* Blur effect for the frosted glass */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background: rgba(255, 255, 255, 0.393); 
+  backdrop-filter: blur(10px); 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  
   color: #000;
 }
 .welcome textarea {
@@ -57,6 +57,9 @@
   background: #111522;
   padding: 10px 20px;
 }
+.replycontainer{
+  color: #fff;
+}
 
 
 .welcome .icon {
@@ -65,9 +68,9 @@
   color: #2a0000;
 }
 .buttonicon {
-  background-color: transparent; /* Set background color to transparent */
-  border: 1px solid #ccc; /* Add a solid border with the desired color */
-  border-radius: 5px; /* Add border-radius for rounded corners */
+  background-color: transparent;  
+  border: 1px solid #ccc;   
+  border-radius: 5px;  
   padding: 5px 5px;
   margin: 5px 10px; 
   color: #000;
@@ -79,8 +82,8 @@
 }
 
 .icon:hover {
-  color: #ffffff; /* Set icon color */
-  font-size: 15px; /* Set icon size */
+  color: #ffffff;  
+  font-size: 15px; 
 }
 .welcome input {
   outline: none;

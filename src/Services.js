@@ -112,7 +112,7 @@ placeholder="Search issues, solutions, or BIOS files"
 value={searchQuery}
 onChange={handleSearchChange}
 />
-<a href="/login"><button>Upload Bios File</button></a>
+<a href="/login"><button>Upload Files. Bios, issue images and etc..</button></a>
 
 </div>
 <ul className="results">

@@ -1,5 +1,5 @@
 .notifications{
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.151), rgba(0, 0, 0, 0.169)), url('./images/river.jpg'); 
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.151), rgba(0, 0, 0, 0.169)), url('./images/river.jpg'); 
   background-size: cover;
   background-position: 100%;
   background-attachment: fixed;
@@ -10,27 +10,40 @@
   z-index: 9999;
   list-style: none; 
 }
-.file-item{
-    list-style: none; 
-    padding: 0; 
-    margin: 0; 
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    width: 50%; /* Adjust the width as per your preference */
-    margin: 20px auto; 
-    border: 1px solid transparent;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.295); /* White background with some transparency */
-    backdrop-filter: blur(10px); /* Blur effect for the frosted glass */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    color: #000;
-    text-align:center;
-    align-items: left;
-   height: 100%;
+.file-item {
+  list-style: none;
+  padding: 10px;
+  margin: 20px auto;
+  box-sizing: border-box;
+  width: 100%; 
+  max-width: 50%; 
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.295);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #000;
+  text-align: center;
+  height: 100%;
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
 }
-.file-item a{
-    color: #830000;
-    font-size: 16px;
-    font-weight: 600;
+
+.file-item a {
+  display: block;
+  color: #830000;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap; 
+  overflow: hidden;  
+  text-overflow: ellipsis; 
+  max-width: 100%;  
+}
+
+@media (max-width: 600px) {
+  .file-item {
+    max-width: 90%;  
+  }
 }
 .file-item a:hover{
     outline: none;

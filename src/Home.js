@@ -9,7 +9,7 @@ import TimelineComponent from './TimelineComponent';
 import delllogo from './images/delllogo.png';
 import hplogo from './images/hplogo.png';
 import asuslogo from './images/asuslogo.png';
-import acerlogo from './images/acerlogo.png';
+import acerlogo from './images/acerlogo.jpg';
 import microsoftlog from './images/microsoftlogo.png';
 import applelogo from './images/applelogo.jpg';
 
