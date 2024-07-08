@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navigation from './Navigation';
 import Headers from './Headers';
 import Home from './Home';
@@ -15,9 +15,17 @@ import AdminPanel from './AdminPanel';
 import ProductDetail from './ProductDetail';
 import Fechingfilesfromrender from './Fechingfilesfromrender';
 import Notifications from './Notifications';
-
+import pingBackend from './pingBackend';
 
 function App() {
+  useEffect(() => {
+
+    const intervalId = setInterval(pingBackend, 10000);
+
+   
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <Router>
       <div className="App">
