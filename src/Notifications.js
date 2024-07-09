@@ -89,7 +89,8 @@ function Notifications() {
  
 
   const handleUpdateReply = (filename, updatedReply) => {
-    axios.put(`${baseURL}/files/${filename}/replies`, { updatedReply })
+    const replyWithUsername = `${username}: ${updatedReply}`;
+    axios.put(`${baseURL}/files/${filename}/replies`, { updatedReply: replyWithUsername })
       .then(response => {
         console.log(response.data);
         fetchReplies(filename);

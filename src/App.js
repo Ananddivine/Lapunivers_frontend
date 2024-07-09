@@ -20,7 +20,7 @@ import pingBackend from './pingBackend';
 function App() {
   useEffect(() => {
 
-    const intervalId = setInterval(pingBackend, 10000);
+    const intervalId = setInterval(pingBackend, 300000);
 
    
     return () => clearInterval(intervalId);
