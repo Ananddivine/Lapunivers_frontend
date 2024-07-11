@@ -14,7 +14,7 @@ const ForgotPassword = () => {
     setLoading(true); // Start loading
     try {
       // Fetch data or perform actions here...
-      const response = await fetch('https://script.google.com/macros/s/AKfycbzlg57wYK-ZAeYT6RTIkoKWg8L005I54LTYbs9W9kKznD3N1ATIziA-5bkshcdLXliRGw/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwuij_rkOOZxH6oMkHotL-Y9HhZe7FOq1OMfjrDHkk2hoiu139OlgMLhGa4jPU8Ikhg5g/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -43,7 +43,7 @@ const ForgotPassword = () => {
     setLoading(true); // Start loading
     try {
       // Send OTP and new password to server for password reset
-      const response = await fetch('https://script.google.com/macros/s/AKfycbzlg57wYK-ZAeYT6RTIkoKWg8L005I54LTYbs9W9kKznD3N1ATIziA-5bkshcdLXliRGw/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwuij_rkOOZxH6oMkHotL-Y9HhZe7FOq1OMfjrDHkk2hoiu139OlgMLhGa4jPU8Ikhg5g/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
