@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faCheck, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import './Login.css';
+
+
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [passwordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -29,11 +35,19 @@ const Register = () => {
     const isStrongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
 
     if (!isStrongPassword) {
-      setPasswordError('Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+      document.getElementById("setPasswordError");
+      document.getElementById("setPasswordError").classList.remove("hidden");
+        setTimeout(() => {
+            document.getElementById("setPasswordError").classList.add("hidden");
+        }, 5000)
+      form.elements["password"].value = '';
+      form.elements["confirm-password"].value = '';
       return;
-    }
+    };
 
-    setPasswordError('');
+
+
+  
 
 
     const spinner = document.getElementById('loading-spinner');
@@ -43,7 +57,13 @@ const Register = () => {
 
     const confirmPassword = form.elements["confirm-password"].value;
     if (password !== confirmPassword) {
-      document.getElementById("result").innerHTML = "Password and confirm password do not match!";
+      document.getElementById("result");
+      document.getElementById("result").classList.remove("hidden");
+        setTimeout(() => {
+            document.getElementById("result").classList.add("hidden");
+        }, 4000)
+        form.elements["password"].value = '';
+        form.elements["confirm-password"].value = '';
       setLoading(false);
       spinner.style.display = 'none';
       spinners.style.display = 'none';
@@ -66,10 +86,13 @@ const Register = () => {
         window.dispatchEvent(storageChangeEvent);
         navigate(`/welcome?name=${json.name}`);
       } else {
-        document.getElementById("result").innerHTML = json.message;
+        document.getElementById("error-message").innerHTML = json.message;
+        document.getElementById("error-message").classList.remove("hidden");
+        setTimeout(() => {
+            document.getElementById("error-message").classList.add("hidden");
+        }, 4000);
       }
-
-      form.reset();
+     form.elements["email"].value = '';
     } catch (error) {
       console.error(error);
     } finally {
@@ -78,6 +101,16 @@ const Register = () => {
       spinners.style.display = 'none';
     }
   };
+
+  const togglePasswordVisibility = () =>{
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () =>{
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+
   return (
     <div>
       <style>
@@ -158,25 +191,31 @@ const Register = () => {
           }
         `}
       </style>
-
+      <div id="error-message" className="message hidden error-message"><FontAwesomeIcon icon={faTimes} /> <span id="error-message-text"></span></div>
+      <div id="success-message" className="message hidden success-message"> <FontAwesomeIcon icon={faCheck} /> Your message has been sent. Thank you!</div>
       <div id="loading-spinner" style={{ display: 'none' }}><h1>Loading...</h1></div>
       <div id="loading-spinners" style={{ display: 'none' }}><h1>Loading...</h1></div>
-<div className='login-container'>
+      <div className='login-container'>
       <form id="register-form" onSubmit={handleFormSubmit} className='register-form'>
         <input type="text" name="name" placeholder="Name" required />
         <input type="email" name="email" placeholder="Email id" required />
         {emailError && <p style={{ color: 'red' }}>{emailError}</p>}
-        <input type="password" name="password" placeholder="Password" required />
-        {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
-        <input type="password" name="confirm-password" placeholder="Confirm-Password" required />
+        <div className="password-container">
+          <input type={showPassword ? "text" : "password"}  name="password"  placeholder="Password" required />
+          <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} onClick={togglePasswordVisibility} className="password-toggle-icon" />
+        </div>
+        {passwordError && <p style={{ color: 'red' }} >{passwordError}</p>}
+        <div className="password-container">
+          <input type={showConfirmPassword ? "text" : "password"} name="confirm-password" placeholder="Confirm Password" required />
+          <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} onClick={toggleConfirmPasswordVisibility} className="password-toggle-icon" />
+        </div>
         <input type="text" name="password-hint" placeholder="Password-Hint" required />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit'}
-        </button>
+        <button type="submit" disabled={loading}> {loading ? 'Submitting...' : 'Submit'} </button>
         <p><a href="/login">Already have an account</a></p>
       </form>
       </div>
-      <div id="result"></div>
+      <div id="result"  className="message hidden error-message"><p style={{color: '#fff'}}>Password and confirm password do not match!</p></div>
+      <div id="setPasswordError"  className="message hidden error-message"><p style={{color: '#fff'}}>Password must be at least 8 characters long <br/>And include at least one uppercase letter, one lowercase letter, one number, and one special character.</p></div>
     </div>
   );
 };

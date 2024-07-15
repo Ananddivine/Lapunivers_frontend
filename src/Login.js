@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import './Login.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faCheck, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import './Login.css';
 
 
 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
 
   useEffect(() => {
     // Check if the user is already logged in
@@ -39,7 +43,12 @@ const Login = () => {
         localStorage.setItem('email', json.email);
         navigate(`/Welcome?name=${json.name}`);
       } else {
-        document.getElementById("result").innerHTML = json.message;
+        
+        document.getElementById("error-message").innerHTML = json.message;
+        document.getElementById("error-message").classList.remove("hidden");
+        setTimeout(() => {
+            document.getElementById("error-message").classList.add("hidden");
+        }, 3000);
       }
       form.reset();
       setLoading(false);
@@ -54,7 +63,11 @@ const Login = () => {
     });
   };
 
-  
+  const togglePasswordVisibility = () =>{
+    setShowPassword(!showPassword);
+  };
+
+
 
   return (
     <div>
@@ -137,23 +150,27 @@ const Login = () => {
           }
         `}
       </style>
-
-      <div id="loading-spinner" style={{ display: 'none' }}><h1>Loading...</h1></div>
-      <div id="loading-spinners" style={{ display: 'none' }}><h1>Loading...</h1></div>
+      <div id="error-message" className="message hidden error-message"><FontAwesomeIcon icon={faTimes} /> <span id="error-message-text"></span></div>
+      <div id="success-message" className="message hidden success-message"> <FontAwesomeIcon icon={faCheck} /> Your message has been sent. Thank you!</div>
+      <div id="loading-spinner" style={{ display: 'none' }}></div>
+      <div id="loading-spinners" style={{ display: 'none' }}></div>
       <div className="login-container">
       <form id="login-form" onSubmit={handleFormSubmit} className="login-form">
         <h1>Login</h1>
         <input type="email" name="email" placeholder="Email Id" required />
-        <input type="password" name="password" placeholder="Password" required />
+        <div className="password-container">
+          <input type={showPassword ? "text" : "password"}  name="password"  placeholder="Password" required />
+          <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} onClick={togglePasswordVisibility} className="password-toggle-icon" />
+        </div>
         <button type="submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </button>
         <p><Link to="/Register">Don't You Have An Account</Link></p>
         <p><Link to="/ForgotPassword">ForgotPassword</Link></p>
       </form>
-      <div id="result"></div>
+    
     </div>
-      <div id="result"></div>
+     
     </div>
   );
 };

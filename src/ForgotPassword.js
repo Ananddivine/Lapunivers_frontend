@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import './Forgot.css';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -6,14 +9,12 @@ const ForgotPassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [stage, setStage] = useState(1); // Stage 1 for entering email, Stage 2 for entering OTP and new password
-  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false); // Define loading state
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Start loading
     try {
-      // Fetch data or perform actions here...
       const response = await fetch('https://script.google.com/macros/s/AKfycbwuij_rkOOZxH6oMkHotL-Y9HhZe7FOq1OMfjrDHkk2hoiu139OlgMLhGa4jPU8Ikhg5g/exec', {
         method: 'POST',
         headers: {
@@ -25,14 +26,26 @@ const ForgotPassword = () => {
       });
       const data = await response.json();
       if (data.success) {
-        setMessage(data.message);
+        document.getElementById("success-message").innerHTML = data.message;
+        document.getElementById("success-message").classList.remove("hidden");
+        setTimeout(() => {
+            document.getElementById("success-message").classList.add("hidden");
+        }, 3000);
         setStage(2); // Move to stage 2 for entering OTP and new password
       } else {
-        setMessage('Error: ' + data.message);
+        document.getElementById("error-message").innerHTML = 'Error: ' + data.message;
+        document.getElementById("error-message").classList.remove("hidden");
+        setTimeout(() => {
+            document.getElementById("error-message").classList.add("hidden");
+        }, 3000);
       }
     } catch (error) {
       console.error('Error:', error);
-      setMessage('Internal Server Error');
+      document.getElementById("error-message").innerHTML = 'Internal Server Error';
+      document.getElementById("error-message").classList.remove("hidden");
+      setTimeout(() => {
+          document.getElementById("error-message").classList.add("hidden");
+      }, 3000);
     } finally {
       setLoading(false); // Stop loading
     }
@@ -42,7 +55,6 @@ const ForgotPassword = () => {
     e.preventDefault();
     setLoading(true); // Start loading
     try {
-      // Send OTP and new password to server for password reset
       const response = await fetch('https://script.google.com/macros/s/AKfycbwuij_rkOOZxH6oMkHotL-Y9HhZe7FOq1OMfjrDHkk2hoiu139OlgMLhGa4jPU8Ikhg5g/exec', {
         method: 'POST',
         headers: {
@@ -56,15 +68,26 @@ const ForgotPassword = () => {
       });
       const data = await response.json();
       if (data.success) {
-       
-        setMessage(data.message);
+        document.getElementById("success-message").innerHTML = data.message;
+        document.getElementById("success-message").classList.remove("hidden");
+        setTimeout(() => {
+            document.getElementById("success-message").classList.add("hidden");
+        }, 3000);
         window.location.href = '/login';
       } else {
-        setMessage('Error: ' + data.message);
+        document.getElementById("error-message").innerHTML = 'Error: ' + data.message;
+        document.getElementById("error-message").classList.remove("hidden");
+        setTimeout(() => {
+            document.getElementById("error-message").classList.add("hidden");
+        }, 3000);
       }
     } catch (error) {
       console.error('Error:', error);
-      setMessage('Internal Server Error');
+      document.getElementById("error-message").innerHTML = 'Internal Server Error';
+      document.getElementById("error-message").classList.remove("hidden");
+      setTimeout(() => {
+          document.getElementById("error-message").classList.add("hidden");
+      }, 3000);
     } finally {
       setLoading(false); // Stop loading
     }
@@ -73,7 +96,11 @@ const ForgotPassword = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setMessage('Error: New password and confirm password do not match');
+      document.getElementById("error-message").innerHTML = 'Error: New password and confirm password do not match';
+      document.getElementById("error-message").classList.remove("hidden");
+      setTimeout(() => {
+          document.getElementById("error-message").classList.add("hidden");
+      }, 3000);
       return;
     }
     handlePasswordReset(e);
@@ -165,31 +192,34 @@ const ForgotPassword = () => {
           <h1>Loading...</h1>
         </div>
       )}
+      <div id="error-message" className="message hidden error-message"><FontAwesomeIcon icon={faTimes} /> <span id="error-message-text"></span></div>
+      <div id="success-message" className="message hidden success-message"> <FontAwesomeIcon icon={faCheck} /> <span id="success-message-text"></span></div>
       {stage === 1 ? (
         <form onSubmit={handleEmailSubmit}>
           <h1>Forgot Password</h1>
-          <p>{message}</p>
           <input
             type="email"
             placeholder="Enter your email"
+            name='email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <button type="submit">Submit</button>
+          <button className='submit' type="submit">Submit</button>
         </form>
       ) : (
         <form onSubmit={handleSubmit}>
           <h1>Reset Password</h1>
-          <p>{message}</p>
           <input
             type="text"
+            name='otp'
             placeholder="Enter OTP"
             value={otp}
             onChange={(e) => setOTP(e.target.value)}
             required
           />
           <input
+          name='password'
             type="password"
             placeholder="Enter new password"
             value={newPassword}
@@ -197,13 +227,14 @@ const ForgotPassword = () => {
             required
           />
           <input
+           name='confirmpassword'
             type="password"
             placeholder="Confirm new password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <button type="submit">Reset Password</button>
+          <button className='submit' type="submit">Reset Password</button>
         </form>
       )}
     </div>

@@ -1,4 +1,6 @@
-
+body {
+    font-family: 'Trebuchet MS', sans-serif;
+  }
 .input-container {
     position: fixed;
     top: 20;
@@ -41,7 +43,7 @@
     list-style: none; 
 }
 .input-container{
-    z-index: 9999;
+    z-index: 999;
 }
 .input-container input::placeholder{
     color: #000;
@@ -74,7 +76,7 @@
     text-align: center;
     background-color: rgba(255, 255, 255, 0.295);
     border-radius: 15px;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(20px);
 }
 
 .issue-card h3 {
@@ -90,6 +92,12 @@
 
 .issue-description.expanded {
     display: block;
+}
+.issue-card p{
+    color: #000000!important;
+    font-size: 13px;
+    font-weight: 550;
+    font-family: trebuchet 'Trebuchet MS', sans-serif!important;
 }
 
 .issue-card button {
@@ -112,34 +120,14 @@
     color: #ccc;
 }
 
-.download-links {
-    list-style-type: none;
-    padding: 0;
-}
+
 @media screen and (max-width: 620px) {
     .issue-card {
         width: 100%;
     }
 }
-.download-links a{
-    color: aqua;
-    text-decoration: none;
-    
-}
-.download-links li{
-    padding: 10px 20px;
-    box-sizing: border-box;
-    border: 1px solid #282c34;
-    width: fit-content;
-    margin: 20px;
-    border-radius: 10px;
-}
-.download-links .icon{
-    margin-right: 20px;
-}
-.download-links li a:hover{
-    color: #fff;
-}
+
+
 
 .input-container button{
     outline: none;
@@ -147,4 +135,22 @@
     background: #282c34;
     border-radius: 10px;
     color: #ccc;
+}
+.downloadsection{
+    outline: none;
+    width: 600px; 
+    padding: 10px 50px;
+    margin: 3px 4px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    background: rgba(255, 255, 255, 0.692);
+    outline: none;
+    border-radius: 10px;
+    color: #fff;
+    box-shadow: 1px 2px 20px 7px #333;
+}
+.download{
+    outline: none;
+    border: none;
+    background: transparent;
 }

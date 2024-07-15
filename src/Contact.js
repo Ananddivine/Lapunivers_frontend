@@ -16,14 +16,14 @@ function Contact() {
         
         fetch(scriptURL, { method: 'POST', body: new FormData(form) })
           .then(response => response.json())
-          .then(result => {
+          .then(_result => {
             loadingSpinner.classList.add("hidden");
             document.getElementById("success-message").classList.remove("hidden");
             setTimeout(() => {
               document.getElementById("success-message").classList.add("hidden");
             }, 3000); 
           })
-          .catch(error => {
+          .catch(_error => {
             loadingSpinner.classList.add("hidden");
             document.getElementById("error-message").classList.remove("hidden");
             setTimeout(() => {

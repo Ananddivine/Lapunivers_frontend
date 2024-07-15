@@ -1,12 +1,19 @@
-import React, { useState } from "react";
-import './Service.css'
-import { faMicrochip } from "@fortawesome/free-solid-svg-icons/faMicrochip";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import './Service.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMicrochip } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from 'react-router-dom';
 
-function Services(){
+function Services() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
+  const [files, setFiles] = useState([]);
+  const navigate = useNavigate();
+  const baseURL = 'https://backend-1-la1d.onrender.com'; // Replace with your actual backend URL
 
-// Dummy data for laptop issues and solutions
-const laptopIssues = [
+  // Dummy data for laptop issues and solutions
+  const laptopIssues = [
 { id: 2, issue: "Slow performance", solution: "If your laptop is running slowly, it could be due to various reasons such as malware infections, accumulation of temporary files, or outdated software. To improve performance, start by scanning your laptop for malware using reputable antivirus software. Next, clean temporary files by running disk cleanup utilities or manually deleting unnecessary files. Additionally, consider optimizing startup programs and services to reduce system load. Updating device drivers and operating system software can also address performance issues by fixing bugs and enhancing compatibility with hardware components." },
 { id: 3, issue: "Battery not charging", solution: "If your laptop battery is not charging, it may indicate a problem with the battery itself, the charging cable, or the charging port. Start by checking the physical condition of the charging cable and port for any visible damage or debris. If everything looks fine, try using a different power outlet or charging cable to rule out power source issues. If the problem persists, it's likely a battery-related issue. In such cases, consider replacing the battery with a new one to restore charging functionality." },
 { id: 4, issue: "Overheating", solution: "Laptop overheating can occur due to factors such as dust accumulation in vents and fans, inadequate airflow, or heavy system load. To address overheating issues, start by shutting down the laptop and allowing it to cool down. Once cooled, use compressed air or a soft brush to clean dust and debris from the vents and fan blades. Ensure proper airflow by using the laptop on a hard, flat surface and avoiding blocking air intake vents. Consider using a laptop cooling pad to improve ventilation during intensive tasks. Additionally, reducing system load by closing unnecessary programs or adjusting power settings can help mitigate overheating." },
@@ -73,72 +80,94 @@ const laptopIssues = [
 
 ];
 
-const [searchQuery, setSearchQuery] = useState("");
+useEffect(() => {
+    axios.get(`${baseURL}/files`)
+      .then(response => {
+        setFiles(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching files:', error);
+      });
+  }, [baseURL]);
 
-// State to track expanded descriptions
-const [expandedDescriptions, setExpandedDescriptions] = useState({});
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
-// Function to handle search input change
-const handleSearchChange = (e) => {
-setSearchQuery(e.target.value);
-};
+  const toggleDescription = (id) => {
+    setExpandedDescriptions(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
+  };
 
-// Function to toggle description expansion
-const toggleDescription = (id) => {
-setExpandedDescriptions(prevState => ({
-    ...prevState,
-    [id]: !prevState[id]
-}));
-};
-
-// Filter laptop issues based on search query
-const filteredIssues = laptopIssues.filter(issue =>
+  const filteredIssues = laptopIssues.filter(issue =>
     searchQuery
-        .toLowerCase()
-        .split(/\s+/) // Split the search query into individual words
-        .some(word =>
-            issue.issue.toLowerCase().includes(word) ||
-            issue.solution.toLowerCase().includes(word)
-        )
-);
+      .toLowerCase()
+      .split(/\s+/)
+      .some(word =>
+        issue.issue.toLowerCase().includes(word) ||
+        issue.solution.toLowerCase().includes(word)
+      )
+  );
 
-return(
-<div className="services-container">
-<h1>SERVICES</h1>
-<div className="input-container">
-    <input
-type="text"
-placeholder="Search issues, solutions, or BIOS files"
-value={searchQuery}
-onChange={handleSearchChange}
-/>
-<a href="/login"><button>Upload Files. Bios, issue images and etc..</button></a>
+  const filteredFiles = files.filter(file =>
+    searchQuery
+      .toLowerCase()
+      .split(/\s+/)
+      .some(word =>
+        file.filename.toLowerCase().includes(word)
+      )
+  );
 
-</div>
-<ul className="results">
-    {filteredIssues.map(issue => (
-        <div key={issue.id} className="issue-link">
+  const handleDownload = (filename) => {
+    const isUserLoggedIn = localStorage.getItem('username');
+    if (isUserLoggedIn) {
+      window.location.href = `${baseURL}/upload/${filename}`;
+    } else {
+      navigate('/register');
+    }
+  };
+
+  return (
+    <div className="services-container">
+      <h1>SERVICES</h1>
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Search issues, solutions, or BIOS files"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+        <a href="/login"><button>Upload Files. Bios, issue images and etc..</button></a>
+      </div>
+      <ul className="results">
+        {filteredIssues.map(issue => (
+          <div key={issue.id} className="issue-link">
             <div className="issue-card">
-                        <h3 className="issue-title">{issue.issue}</h3>
-                        <p className={`issue-description ${expandedDescriptions[issue.id] ? 'expanded' : 'collapsed'}`}>{issue.solution}</p>
-                        <button onClick={() => toggleDescription(issue.id)}>
-                            {expandedDescriptions[issue.id] ? 'Hide' : 'Read More'}
-                        </button>
+              <h3 className="issue-title">{issue.issue}</h3>
+              <p className={`issue-description ${expandedDescriptions[issue.id] ? 'expanded' : 'collapsed'}`}>{issue.solution}</p>
+              <button onClick={() => toggleDescription(issue.id)}>
+                {expandedDescriptions[issue.id] ? 'Hide' : 'Read More'}
+              </button>
             </div>
-        </div>
-    ))}
-</ul>
-<ul className="download-links">
-<li>
-<a href="/biosfiles/HP_Pavilion_dv6_7001tx_11253_2_48_4ST06_021_Balen_1_0_GDDR5N13P.zip" download><FontAwesomeIcon icon={faMicrochip} className="icon"/>HP_Pavilion_dv6_7001tx_11253_2_48_4ST06_021_Balen_1_0_GDDR5N13P</a>
-</li>
-<li>
-    
-    <a href="/biosfiles/HP_Pavilion_dv6_7001tx_11253_2_48_4ST06_021_Balen_1_0_GDDR5N13P.zip" download><FontAwesomeIcon icon={faMicrochip}/>HP_Pavilion_dv6_7001tx_11253_2_48_4ST06_021_Balen_1_0_GDDR5N13P</a>
-</li>
-
-</ul>
-</div>
-);
+          </div>
+        ))}
+      </ul>
+      <ul >
+        {filteredFiles.map((file, index) => (
+          <li key={index} >
+            <div className="downloadsection"> 
+            <button className="download" onClick={() => handleDownload(file.filename)}>
+              <FontAwesomeIcon icon={faMicrochip} className="icon" /> {file.filename}
+            </button>
+            </div>
+           
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
+
 export default Services;
