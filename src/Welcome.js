@@ -225,7 +225,7 @@
                       <FontAwesomeIcon icon={faQuoteLeft} className="icon" /> Reply
                   </button>
                 )} 
-                <a className="downloadsection" href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
+                <a className="downloadsections" href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
                 </a>
               </div>
