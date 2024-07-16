@@ -12,6 +12,7 @@ const Register = () => {
   const [passwordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -110,6 +111,9 @@ const Register = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const handleTermsChange = (_e) => {
+   setTermsAccepted(!termsAccepted)
+  };
 
   return (
     <div>
@@ -193,8 +197,8 @@ const Register = () => {
       </style>
       <div id="error-message" className="message hidden error-message"><FontAwesomeIcon icon={faTimes} /> <span id="error-message-text"></span></div>
       <div id="success-message" className="message hidden success-message"> <FontAwesomeIcon icon={faCheck} /> Your message has been sent. Thank you!</div>
-      <div id="loading-spinner" style={{ display: 'none' }}><h1>Loading...</h1></div>
-      <div id="loading-spinners" style={{ display: 'none' }}><h1>Loading...</h1></div>
+      <div id="loading-spinner" style={{ display: 'none' }}></div>
+      <div id="loading-spinners" style={{ display: 'none' }}></div>
       <div className='login-container'>
       <form id="register-form" onSubmit={handleFormSubmit} className='register-form'>
         <input type="text" name="name" placeholder="Name" required />
@@ -210,6 +214,10 @@ const Register = () => {
           <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} onClick={toggleConfirmPasswordVisibility} className="password-toggle-icon" />
         </div>
         <input type="text" name="password-hint" placeholder="Password-Hint" required />
+        <div className="terms-container">
+           
+            <label htmlFor="terms-checkbox"><p> <input type="checkbox" id="terms-checkbox" className="checkicon" onChange={handleTermsChange} required />  I agree to the <a href="/terms">terms and conditions</a></p></label>
+          </div>
         <button type="submit" disabled={loading}> {loading ? 'Submitting...' : 'Submit'} </button>
         <p><a href="/login">Already have an account</a></p>
       </form>

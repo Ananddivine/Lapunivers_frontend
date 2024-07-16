@@ -139,7 +139,7 @@ useEffect(() => {
           value={searchQuery}
           onChange={handleSearchChange}
         />
-        <a href="/login"><button>Upload Files. Bios, issue images and etc..</button></a>
+        <a href="/welcome"><button>Upload Files. Bios, issue images and etc..</button></a>
       </div>
       <ul className="results">
         {filteredIssues.map(issue => (

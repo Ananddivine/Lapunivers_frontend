@@ -14,7 +14,7 @@ function Navigation() {
     const [isNavbarOpen, setNavbarOpen] = useState(false);
     const [hasNewNotification, setHasNewNotification] = useState(false);
 
-    const handleNavbarToggle = () => {
+    const handleNavbarToggle = () => {      
         setNavbarOpen(!isNavbarOpen);
     };
 

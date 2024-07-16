@@ -15,7 +15,7 @@ function Notifications() {
   const navigate = useNavigate();
   const baseURL = 'https://backend-1-la1d.onrender.com';
   const [searchQuery, setSearchQuery] = useState("");
-
+  
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
