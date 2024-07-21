@@ -56,7 +56,8 @@ function Notifications() {
   }, [baseURL, username, email]);
 
   const fetchReplies = (filename) => {
-    axios.get(`${baseURL}/files/${filename}/replies`)
+    const encodedFilename = encodeURIComponent(filename);
+    axios.get(`${baseURL}/files/${encodedFilename}/replies`)
       .then(response => {
         console.log(`Fetched replies for ${filename}:`, response.data);
         setReplies(prevReplies => ({
@@ -68,6 +69,7 @@ function Notifications() {
         console.error('Error fetching replies:', error);
       });
   };
+  
 
   const deleteFile = (filename) => {
     axios.delete(`${baseURL}/files/${filename}`)
@@ -89,17 +91,17 @@ function Notifications() {
  
 
   const handleUpdateReply = (filename, updatedReply) => {
-    const replyWithUsername = `${username}: ${updatedReply}`;
-    axios.put(`${baseURL}/files/${filename}/replies`, { updatedReply: replyWithUsername })
-      .then(response => {
-        console.log(response.data);
-        fetchReplies(filename);
+  axios.put(`https://backend-1-la1d.onrender.com/files/${encodeURIComponent(filename)}/replies`, { updatedReply })
+    .then(response => {
+      console.log(response.data);
+        fetchReplies(filename); 
         setActiveReplyField(null);
       })
       .catch(error => {
         console.error('Error updating reply:', error);
       });
   };
+  
 
   return (
     <div className="notifications">

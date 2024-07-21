@@ -120,7 +120,7 @@
       if (files[index].replyText && files[index].replyText.trim() !== "") {
         const replyWithUsername = `${username} :-  ${files[index].replyText}`;
         console.log('Reply text:', replyWithUsername);
-
+    
         const updatedFiles = [...files];
         updatedFiles[index] = {
           ...updatedFiles[index],
@@ -130,10 +130,11 @@
         };
         updatedFiles[index].replies.push(replyWithUsername);
         console.log('Updated files:', updatedFiles);
-
+    
         setFiles(updatedFiles);
-
-        axios.post(`${baseURL}/files/${filename}/replies`, { reply: replyWithUsername })
+    
+        const encodedFilename = encodeURIComponent(filename);
+        axios.post(`${baseURL}/files/${encodedFilename}/replies`, { reply: replyWithUsername })
           .then(_response => {
             console.log('Reply submitted successfully:', replyWithUsername);
           })
@@ -144,13 +145,15 @@
         alert("Please enter a reply.");
       }
     };
+    
 
     useEffect(() => {
       axios.get(`${baseURL}/files`)
         .then(response => {
           setFiles(response.data);
           response.data.forEach(file => {
-            axios.get(`${baseURL}/files/${file.filename}/replies`)
+            const encodedFilename = encodeURIComponent(file.filename);
+            axios.get(`${baseURL}/files/${encodedFilename}/replies`)
               .then(replyResponse => {
                 setFiles(prevFiles => prevFiles.map(prevFile => {
                   if (prevFile.filename === file.filename) {
@@ -162,13 +165,16 @@
                   return prevFile;
                 }));
               })
-              .catch(() => {
+              .catch(error => {
+                console.error(`Error fetching replies for ${file.filename}:`, error);
               });
           });
         })
-        .catch(() => {
+        .catch(error => {
+          console.error('Error fetching files:', error);
         });
     }, [baseURL]);
+    
 
     const handelLogout = () =>{
       localStorage.removeItem('username');
