@@ -157,18 +157,19 @@
     cursor: pointer;
 
 }
-.downloadsection{
-    outline: none;
+.downloadsections{
+    outline: none!important;
     width: 600px; 
     padding: 10px 50px;
     margin: 5px 4px;
     box-sizing: border-box;
-    border: 1px solid #ccc;
-    background: rgba(255, 255, 255, 0.692);
-    outline: none;
-    border-radius: 5px;
     color: #fff;
-    box-shadow: 1px 3px 10px 1px rgba(219, 206, 206, 0.548);
+    cursor: pointer;
+
+}
+.downloadsections button{
+    outline: none;
+    border: non;
 }
 .download{
     outline: none;
@@ -261,4 +262,8 @@
     box-shadow: 1px 3px 10px 1px rgba(219, 206, 206, 0.548);
     cursor: pointer;
     }
-  
+
+  .boreds .downloadsections{
+   border: none;
+   background-color: transparent;
+  }

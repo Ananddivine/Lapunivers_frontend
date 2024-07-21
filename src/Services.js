@@ -129,10 +129,10 @@ useEffect(() => {
       )
   );
   
-  const handleDownload = (filename) => {
+  const handleDownloadClick = (filename) => {
     const isUserLoggedIn = localStorage.getItem('username');
     const userEmail = localStorage.getItem('email');
-    
+
     if (isUserLoggedIn && userEmail) {
       window.location.href = `${baseURL}/upload/${filename}`;
     } else {
@@ -235,93 +235,96 @@ useEffect(() => {
       </div>
    <div className="services-container">
        <ul className="results">
-            {filteredIssues.map(issue => (
-              <div key={issue.id} className="issue-link">
-                <div className="issue-card">
-                  <h3 className="issue-title">{issue.issue}</h3>
-                  <p className={`issue-description ${expandedDescriptions[issue.id] ? 'expanded' : 'collapsed'}`}>{issue.solution}</p>
-                  <button onClick={() => toggleDescription(issue.id)}>
-                    {expandedDescriptions[issue.id] ? 'Hide' : 'Read More'}
-                  </button>
-                </div>
-              </div>
-            ))}
-
-            {filteredFiles.map((file, index) => (
-              <li key={index}>
-                {!file.filename.endsWith('.txt') && (
-                <React.Fragment>
-                  <div className="boreds">
-                    <p>{file.description}</p>
-                    {file.replies && (
-                      <ul>
-                        {file.replies.map((reply, replyIndex) => (
-                          <li key={replyIndex}>{reply}</li>
+                        {filteredIssues.map(issue => (
+                          <div key={issue.id} className="issue-link">
+                            <div className="issue-card">
+                              <h3 className="issue-title">{issue.issue}</h3>
+                              <p className={`issue-description ${expandedDescriptions[issue.id] ? 'expanded' : 'collapsed'}`}>{issue.solution}</p>
+                              <button onClick={() => toggleDescription(issue.id)}>
+                                {expandedDescriptions[issue.id] ? 'Hide' : 'Read More'}
+                              </button>
+                            </div>
+                          </div>
                         ))}
-                      </ul>
-                    )}
-                    {file.showReply ? (
-                      <div className="replycontainers">    
-                        <textarea
-                          value={file.replyText || ""}
-                          onChange={(e) => {   
-                            const updatedFiles = [...files];
-                            updatedFiles[index].replyText = e.target.value;
-                            setFiles(updatedFiles);
-                          }}
-                          placeholder="Enter your reply..."
-                        />
-                        <button className="replysubmits" onClick={() => handleReplySubmit(index, file.filename)}>Submit</button>
-                      </div>
-                    ) : (
-                        <button className="buttonicon" onClick={() => handleReply(index)} title="Reply">
-                          <FontAwesomeIcon icon={faQuoteLeft} className="icon" /> Reply
+
+                        {filteredFiles.map((file, index) => (
+                                    <li key={index}>
+                          {!file.filename.endsWith('.txt') && (
+                            <React.Fragment>
+                              <div className="boreds">
+                                <p>{file.description}</p>
+                                {file.replies && (
+                                  <ul>
+                                    {file.replies.map((reply, replyIndex) => (
+                                      <li key={replyIndex}>{reply}</li>
+                                    ))}
+                                  </ul>
+                                )}
+                                {file.showReply ? (
+                                  <div className="replycontainers">
+                                    <textarea
+                                      value={file.replyText || ""}
+                                      onChange={(e) => {
+                                        const updatedFiles = [...files];
+                                        updatedFiles[index].replyText = e.target.value;
+                                        setFiles(updatedFiles);
+                                      }}
+                                      placeholder="Enter your reply..."
+                                    />
+                                    <button className="replysubmits" onClick={() => handleReplySubmit(index, file.filename)}>Submit</button>
+                                  </div>
+                                ) : (
+                                  <button className="buttonicon" onClick={() => handleReply(index)} title="Reply">
+                                    <FontAwesomeIcon icon={faQuoteLeft} className="icon" /> Reply
+                                  </button>
+                                )}
+                                 {localStorage.getItem('username') && localStorage.getItem('email') ? (
+                                    <button className="downloadsections" onClick={() => handleDownloadClick(file.filename)} title="Download">
+                                      <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
+                                    </button>
+                                  ) : (
+                                    <a className="downloadsectionss" href="/welcome" title="Register to Download">
+                                      <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
+                                    </a>
+                                  )}
+
+                              </div>
+                            </React.Fragment>
+                          )}
+                        </li>
+                      ))}
+                </ul>
+
+        <div className="feed-container">
+          <div className="feed">
+            {/* Replace with dynamic content */}
+            <div className="feed-item">
+              <h3>Latest Updates</h3>
+              <p>
+                {filteredFiles.map((file) => (
+                  <li key={file.filename}>
+                    <div className="feed-section">
+                      <button className="feed-download" onClick={() => handleDownloadClick(file.filename)}>
+                        <FontAwesomeIcon icon={faMicrochip} className="icon" /> {file.filename}
                       </button>
-                    )} 
-                    <a className="downloadsections" href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
-                    <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
-                    </a>
-                  </div>
-                </React.Fragment>
-              )}
-            </li>
-          ))}
-      
-      </ul>
-     
-      <div className="feed-container">
-        <div className="feed">
-          {/* Replace with dynamic content */}
-          <div className="feed-item">
-            <h3>Latest Updates</h3>
-            <p> 
-             {filteredFiles.map((file) => (
-            <li>
-              <div className="feed-section"> 
-                  <button className="feed-download" onClick={() => handleDownload(file.filename)}>
-                    <FontAwesomeIcon icon={faMicrochip} className="icon" /> {file.filename}
-                  </button>
-              </div>
-              </li>
-        ))} 
-         </p>
+                    </div>
+                  </li>
+                ))}
+              </p>
+            </div>
+            <div className="feed-item">
+              <h3>Customer Ratings</h3>
+              <p>★★★★★</p>
+            </div>
+            <div className="feed-item">
+              <h3>Featured Files</h3>
+              <p>Download the latest performance enhancements.</p>
+            </div>
+            {/* Add more feed items as needed */}
           </div>
-          <div className="feed-item">
-            <h3>Customer Ratings</h3>
-            <p>★★★★★</p>
-          </div>
-          <div className="feed-item">
-            <h3>Featured Files</h3>
-            <p>Download the latest performance enhancements.</p>
-          </div>
-          {/* Add more feed items as needed */}
         </div>
       </div>
-      
-      </div>
-    
-
     </div>
   );
-}
+};
 export default Services;
