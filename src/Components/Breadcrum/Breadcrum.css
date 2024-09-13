@@ -1,0 +1,57 @@
+.Breadcrum h1{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #5e5e5e;
+    font-size: 30px;
+    font-weight: 500;
+    margin: 60px 50px;
+    text-transform: capitalize;
+}
+
+.Breadcrum img {
+    width: 10px; 
+    height: 10px;
+}
+
+.Breadcrum span {
+    margin: 0 5px; 
+}
+
+.Breadcrum a {
+    text-decoration: none; 
+    color: #5e5e5e; 
+}
+
+.Breadcrum a:hover {
+    text-decoration: underline;
+}
+
+@media(max-width:1280px) {
+    .Breadcrum h1{
+        margin: 60px 50px;
+        font-size: 12px;
+    }
+}
+
+@media(max-width:800px) {
+    .Breadcrum h1{
+        margin: 60px 50px;
+        font-size: 9px;
+    }
+    .Breadcrum img {
+        width: 5px; 
+        height: 7px;
+    }
+}
+
+@media(max-width:500px) {
+    .Breadcrum h1{
+        font-size: 7px;
+    }
+    .Breadcrum img {
+        width: 5px; 
+        height: 7px;
+    }
+}
+

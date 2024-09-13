@@ -1,0 +1,134 @@
+  body {
+    padding-top: 56px;
+    background: #0e1015;
+    position: relative;
+    overflow-y: scroll;
+    font-family: "Poppins", sans-serif;
+  }
+    
+    .navbar{
+      background: #0e1015!important;
+      padding: 2px 3px;
+    }
+    .nav-link{
+      color: #fff!important;
+      font-size: 14px;
+    }
+    .nav-link:hover{
+      color: #07fffb!important;
+    }
+   
+    .nav-lin .btn{
+      border: 1px solid #fff;
+      color: #fff;
+      font-size: 12px;
+    }
+    .btn:hover{
+      color: #0e1015;
+      background: #cccccc;
+      border:1px solid aqua;
+    }
+    .dropdown-divider{
+      border-bottom:1px solid #ccc!important;
+    }
+    .dropdown-item:hover{
+      background: #ccc;
+    }
+    .dropdown-menu{
+  margin-top: -3px!important;
+  z-index: 99999;
+  
+    }
+  .nav-item{
+    margin-right: 10px;
+  }
+  
+  .nav-item button{
+   border: 1px solid #ccc;
+   background: #009dff;
+   cursor: pointer;
+   text-align: center;
+   align-items: center;
+   border-radius: 4px;
+   margin-left: 20px;
+   color: #fff;
+  }
+
+  .nav-item button:hover{
+    background: #00133f;
+    color: #fff;
+  }
+  
+    .form-control:hover{
+      background-color: #232427;
+      border:1px solid #4b5263 ;
+      border-radius: 10px;
+    }
+    .form-control{
+      background-color: #232427!important;
+      border:1px solid #4b5263!important;
+      border-radius: 8px;
+      box-sizing: border-box;
+      box-shadow: none!important;
+  
+    }
+  #nav-bar input{
+    padding: 3px 2px;
+  }
+    .form-control:hover::placeholder{
+      color: #ccc!important;
+    }
+    .form-control{
+      color: #fff!important;
+    }
+  .navbar i{
+    color: #fff;
+  }
+  .navbar-nav .nav-item .nav-link.active {
+    color: #009dff!important;
+    font-weight: bold;
+  }
+  
+  .search{
+    font-size: 17px;
+  
+  }
+  .search::placeholder{
+    font-size: 12px;
+  }
+  #navbarDropdown{
+  color: #fff!important;
+  }
+  .notification-container{
+    margin-left: 30px;
+    margin-top: 2px;
+    align-items: center;
+    color: #fff;
+  }
+  .notification-container:hover{
+    color: #ff0000;
+    cursor: pointer;
+  }
+  
+  .navlinks:hover{
+  text-decoration: none;
+  }
+  
+  .notification-icon {
+    cursor: pointer;
+  }
+  
+  .notification-icon.new-notification .iconss {
+    color: red; 
+    animation: bell-animation 0.5s ease-in-out infinite alternate;
+  }
+  
+  @keyframes bell-animation {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.2);
+    }
+  }
+  

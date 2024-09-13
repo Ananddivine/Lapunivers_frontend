@@ -1,31 +1,37 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navigation from './Navigation';
-import Headers from './Headers';
-import Home from './Home';
-import Product from './Product';
-import About from './About';
-import Services from './Services';
-import Login from './Login';
-import Register from './Register';
-import Contact from './Contact';
-import Welcome from './Welcome';
-import ForgotPassword from './ForgotPassword';
-import AdminPanel from './AdminPanel';
-import ProductDetail from './ProductDetail';
+import React  from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Navbar from './Components/Navbar/Navbar';
+import Home from './Pages/Home';
+import ProductDisplay from './Components/Productdisplay/Productdisplay';
+import About from './Pages/About';
+import Services from './Pages/Services';
+import Login from './Pages/Login';
+import Register from './Pages/Register';
+import Contact from './Pages/Contact';
+import Welcome from './Pages/Welcome';
+import ForgotPassword from './Pages/ForgotPassword';
 import Fechingfilesfromrender from './Fechingfilesfromrender';
-import Notifications from './Notifications';
+import Notifications from './Components/Notification/Notification';
+import { ShopContext } from './Context/ShopContext';
+import ShopCategory from './Pages/ShopCategory';
+import Products from './Pages/Products';
+import Cart from './Pages/Cart';
+import SearchiItemDisplay from './Components/Searchitem/SearchiItemDisplay';
+import Product from './Pages/Product';
+
 
 function App() {
 
   return (
-    <Router>
-      <div className="App">
-        <Navigation />
-        <Headers />
+ 
+      <div>
+      <BrowserRouter>
+      <Navbar />
+
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/Product' element={<Product />} />
+          <Route path='/searchitemsdisplay' element={<SearchiItemDisplay />} />
+          <Route path='/Product' element={<ProductDisplay />} />
           <Route path='/About' element={<About />} />
           <Route path='/Services' element={<Services />} /> 
           <Route path='/Login' element={<Login />} />
@@ -34,13 +40,21 @@ function App() {
           <Route path='/Welcome' element={<Welcome />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path='/ForgotPassword' element={<ForgotPassword />} />
-          <Route path='/admin' element={<AdminPanel />} />
-          <Route path='/product/:id' element={<ProductDetail />} />
+          <Route path='/products' element={<ShopCategory category="shop" />} />
+          <Route path='/products' element={<Products />} />
           <Route path='/*' element={<Home />} />
+          <Route path='/product' element={<Product/>}>
+            <Route path=":productId" element={<Product />} />
+          </Route>
+          <Route path='/ShopContext' element={<ShopContext />} />
           <Route path='/fechingfilesfromrender' element={<Fechingfilesfromrender />} />
-        </Routes>
+          <Route path='/battery' element={<ShopCategory category="battery" />} />
+          <Route path='/keyboard' element={<ShopCategory category="keyboard" />} />
+          <Route path='/laptop' element={<ShopCategory category="laptop" />} />
+          <Route path='/cart' element={<Cart />} />
+          </Routes>
+        </BrowserRouter>
       </div>
-    </Router>
   );
 }
 

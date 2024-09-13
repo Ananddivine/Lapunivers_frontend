@@ -1,0 +1,66 @@
+.Searchresult-item {
+    display: flex;
+    justify-content: center; /* Centers the content horizontally */
+    align-items: center;     /* Centers the content vertically */
+    height: 40vh;           /* Full viewport height to center vertically */
+}
+
+.form-inline {
+    display: flex;
+    flex-direction: column;  /* Arrange items vertically */
+    align-items: center;     /* Center items horizontally */
+    width: 100%;
+    max-width: 600px;        /* Set a max-width for the form */
+}
+
+.form-control.search {
+    width: 100%;             /* Make the search input take up full width */
+    max-width: 500px;        /* Optional: Limit the input width */
+}
+
+.suggestions-list {
+    position: absolute;
+    width: 100%;             /* Make the suggestions list the same width as the input */
+    max-width: 500px;        /* Match the input's max-width */
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 0px;
+    margin: 100px;
+    list-style-type: none;
+}
+
+.suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
+}
+
+@media screen and (max-width: 800px) {
+    .form-inline{
+        width: 90%;
+        }
+
+  .suggestions-list{
+    font-size: 15px;
+    font-weight: 400;
+  }
+}
+@media screen and (max-width: 500px) {
+    .form-inline{
+        width: fit-content;
+        }
+
+  .suggestions-list{
+    font-size: 13px;
+    font-weight: 400;
+  }
+}

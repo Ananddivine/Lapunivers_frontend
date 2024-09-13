@@ -1,0 +1,169 @@
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMicrochip, faReply, faTrashAlt, faSave } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from 'react-router-dom';
+import './Notification.css';
+
+function Notifications() {
+  const [username, setUsername] = useState("");
+  const [token, setToken] = useState("");
+  const [files, setFiles] = useState([]);
+  const [replyUpdate, setReplyUpdate] = useState('');
+  const [replies, setReplies] = useState({});
+  const [activeReplyField, setActiveReplyField] = useState(null);
+  const navigate = useNavigate();
+  const baseURL = 'https://lapuniversbackend-production.up.railway.app';
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredFiles = files.filter(file => {
+    const description = file.description || "";
+    const filename = file.filename || "";
+    const replyTexts = (replies[file.filename] || []).join(" ").toLowerCase();
+    return (
+        description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        replyTexts.includes(searchQuery.toLowerCase())
+    );
+});
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    const storedToken = localStorage.getItem('auth-token');
+    if (!storedUsername || !storedToken) {
+      navigate('/login');
+    } else {
+      setUsername(storedUsername);
+      setToken(storedToken);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (username && token) {
+      axios.get(`${baseURL}/files`)
+        .then(response => {
+          const userFiles = response.data.filter(file => file.username === username && file.token === token);
+          setFiles(userFiles);
+        })
+        .catch(error => {
+          console.error('Error fetching files:', error);
+        });
+    }
+  }, [baseURL, username, token]);
+
+  const fetchReplies = (filename) => {
+    const encodedFilename = encodeURIComponent(filename);
+    axios.get(`${baseURL}/files/${encodedFilename}/replies`)
+      .then(response => {
+        console.log(`Fetched replies for ${filename}:`, response.data);
+        setReplies(prevReplies => ({
+          ...prevReplies,
+          [filename]: response.data
+        }));
+      })
+      .catch(error => {
+        console.error('Error fetching replies:', error);
+      });
+  };
+  
+
+  const deleteFile = (filename) => {
+    axios.delete(`${baseURL}/files/${filename}`)
+      .then(response => {
+        console.log(response.data);
+        setFiles(prevFiles => prevFiles.filter(file => file.filename !== filename));
+        setReplies(prevReplies => {
+          const newReplies = { ...prevReplies };
+          delete newReplies[filename];
+          return newReplies;
+        });
+      })
+      .catch(error => {
+        console.error('Error deleting file:', error);
+      });
+  };
+
+
+ 
+  const handleUpdateReply = (filename, updatedReply) => {
+    const storedUsername = localStorage.getItem('username'); // Get username from localStorage
+    const requestBody = {
+      updatedReply,
+      username: storedUsername // Include the username in the request body
+    };
+  
+    axios.put(`${baseURL}/files/${encodeURIComponent(filename)}/replies`, requestBody)
+   
+      .then(response => {
+        console.log(response.data);
+        fetchReplies(filename); // Refresh the replies after the update
+        setActiveReplyField(null); // Close the input field after saving
+      })
+      .catch(error => {
+        console.error('Error updating reply:', error);
+      });
+  };
+  
+  
+
+  return (
+    <div className="notifications">
+      <h1>Notifications</h1>
+      <p>Hi {username} You Can Manage Your Uploaded Files And You can See If anyone Commant On Your File By Clicking The Show Replies Button </p>
+      <input
+        name="seaches"
+        type="text"
+        value={searchQuery}
+        onChange={handleSearch}
+        placeholder="Search Files"
+      />
+      <ul>
+        {filteredFiles.map((file, index) => (
+          <li key={file.filename}>
+            <div className="file-item">
+              <a href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faMicrochip} className="ico" />  {file.filename}
+              </a>
+              <p>{file.description}</p>
+              <button className="buttons" onClick={() => deleteFile(file.filename)}>
+                <FontAwesomeIcon icon={faTrashAlt} /> Delete File
+              </button>
+             
+             
+              <button className="buttons" onClick={() => setActiveReplyField(file.filename)}>
+                <FontAwesomeIcon icon={faReply} /> Edit Reply
+              </button>
+              {activeReplyField === file.filename && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Update reply"
+                    value={replyUpdate}
+                    onChange={(e) => setReplyUpdate(e.target.value)}
+                  />
+                  <button className="buttons" onClick={() => handleUpdateReply(file.filename, replyUpdate)}>
+                    <FontAwesomeIcon icon={faSave} /> Save
+                  </button>
+                </>
+              )}
+              <button className="buttons" onClick={() => fetchReplies(file.filename)}>Show Replies</button>
+              {replies[file.filename] && (
+                <ul>
+                  {replies[file.filename].map((reply, replyIndex) => (
+                    <li key={replyIndex}>{reply}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default Notifications;

@@ -1,0 +1,82 @@
+/* General toast styles */
+.Toastify__toast {
+    font-size: 12px;
+    padding: 10px; 
+    width: 330px;
+    height: fit-content;
+    color: #000;
+    background-color: #333;
+}
+
+/* Success toast */
+.Toastify__toast--success {
+    background-color: #fdfdfd;
+}
+
+/* Error toast */
+.Toastify__toast--error {
+    background-color: #f7f7f7;
+    padding: 4px 10px;
+}
+
+/* Info toast */
+.Toastify__toast--info {
+    background-color: #2196f3;
+}
+
+/* Warning toast */
+.Toastify__toast--warning {
+    background-color: #ffffff;
+}
+
+/* Customizing the close button */
+.Toastify__close-button {
+    color: #000;
+}
+
+/* Progress bar color for success */
+.Toastify__toast--success .Toastify__progress-bar {
+    background: #48ff00; /* Green for success */
+}
+
+/* Progress bar color for error */
+.Toastify__toast--error .Toastify__progress-bar {
+    background: #ff0000; /* Red for error */
+}
+
+/* Adjusting the progress bar color for other types (optional) */
+.Toastify__toast--info .Toastify__progress-bar {
+    background: #2196f3; /* Blue for info */
+}
+
+.Toastify__toast--warning .Toastify__progress-bar {
+    background: #ff9800; /* Orange for warning */
+}
+
+/* Responsive styles */
+@media (max-width: 1290px){
+    .Toastify__toast {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 1020px){
+    .Toastify__toast {
+        font-size: 14px;
+        width: 300px;
+    }
+}
+
+@media (max-width: 800px){
+    .Toastify__toast {
+        font-size: 13px;
+        width: 270px;
+    }
+}
+
+@media (max-width: 500px){
+    .Toastify__toast {
+        font-size: 12px;
+        width: 250px;
+    }
+}
