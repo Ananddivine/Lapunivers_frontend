@@ -1,0 +1,39 @@
+.border-t {
+        margin-top: 30px;
+  }
+  
+  .py-4 {
+    border-bottom: 1px solid #e2e2e2;
+    margin-left: 20px;
+    border-top: 1px solid #e2e2e2;
+    font-size: 13px;
+  }
+  
+  .process-shipment p{
+    text-align: center;
+   align-items: center;
+   position: static;
+    font-size: 15px;
+    margin-top: -6%;
+  }
+  
+  .border-t img{
+    width: 30px;
+  }
+  .process-shipment p span {
+    width: 10px;
+    height: 10px; /* Make height and width equal for a perfect circle */
+    background: #22ff00; /* Use green background */
+    border-radius: 50%; /* Creates the circle */
+    display: inline-block; /* Ensures the span behaves like a block element */
+    margin-right: 8px; /* Adds space between the circle and text */
+}
+.process-shipment button{
+    margin-left: 90%;
+    margin-top: -3%;
+}
+.text-lg{
+padding-top: -1%;
+padding-top: -2%;
+}
+

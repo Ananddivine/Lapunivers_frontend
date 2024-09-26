@@ -7,7 +7,7 @@ import './Notification.css';
 
 function Notifications() {
   const [username, setUsername] = useState("");
-  const [token, setToken] = useState("");
+  const [email, setEmail] = useState("");
   const [files, setFiles] = useState([]);
   const [replyUpdate, setReplyUpdate] = useState('');
   const [replies, setReplies] = useState({});
@@ -33,27 +33,27 @@ function Notifications() {
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
-    const storedToken = localStorage.getItem('auth-token');
-    if (!storedUsername || !storedToken) {
+    const storedEmail = localStorage.getItem('user-email');
+    if (!storedUsername || !storedEmail) {
       navigate('/login');
     } else {
       setUsername(storedUsername);
-      setToken(storedToken);
+      setEmail(storedEmail);
     }
   }, [navigate]);
 
   useEffect(() => {
-    if (username && token) {
+    if (username && email) {
       axios.get(`${baseURL}/files`)
         .then(response => {
-          const userFiles = response.data.filter(file => file.username === username && file.token === token);
+          const userFiles = response.data.filter(file => file.username === username && file.email === email);
           setFiles(userFiles);
         })
         .catch(error => {
           console.error('Error fetching files:', error);
         });
     }
-  }, [baseURL, username, token]);
+  }, [baseURL, username, email]);
 
   const fetchReplies = (filename) => {
     const encodedFilename = encodeURIComponent(filename);

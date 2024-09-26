@@ -18,6 +18,11 @@ import Products from './Pages/Products';
 import Cart from './Pages/Cart';
 import SearchiItemDisplay from './Components/Searchitem/SearchiItemDisplay';
 import Product from './Pages/Product';
+import PlaceOrder from './Pages/PlaceOrder';
+import { ShopContextProvider } from './Context/ShopContext';
+
+import './App.css';
+import Orders from './Pages/Orders';
 
 
 function App() {
@@ -26,6 +31,7 @@ function App() {
  
       <div>
       <BrowserRouter>
+      <ShopContextProvider>
       <Navbar />
 
         <Routes>
@@ -40,7 +46,7 @@ function App() {
           <Route path='/Welcome' element={<Welcome />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path='/ForgotPassword' element={<ForgotPassword />} />
-          <Route path='/products' element={<ShopCategory category="shop" />} />
+          <Route path='/products' element={<ShopCategory category="laptop" />} />
           <Route path='/products' element={<Products />} />
           <Route path='/*' element={<Home />} />
           <Route path='/product' element={<Product/>}>
@@ -52,7 +58,10 @@ function App() {
           <Route path='/keyboard' element={<ShopCategory category="keyboard" />} />
           <Route path='/laptop' element={<ShopCategory category="laptop" />} />
           <Route path='/cart' element={<Cart />} />
+          <Route path='/place-order' element={<PlaceOrder />} />
+          <Route path='/orders' element={<Orders />} />
           </Routes>
+          </ShopContextProvider>
         </BrowserRouter>
       </div>
   );

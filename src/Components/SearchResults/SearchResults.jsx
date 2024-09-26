@@ -24,7 +24,7 @@ function SearchResults({ searchResults, searchParams }) {
           ))
         ) : (
           <p className='null'>No results found for: {searchQuery}</p>
-        )};
+        )}
     </div>
   );
 }

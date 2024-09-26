@@ -18,6 +18,7 @@
     border-radius: 30px;
     transition: background-color 0.3s, border-color 0.3s;
     cursor: pointer;
+    color: #ddd;
 }
 
 .shopcategory-sort p {
@@ -27,6 +28,7 @@
 .shopcategory-sort:hover {
     background-color: #f5f5f5;
     border-color: #bbb;
+    color: #000;
 }
 
 .shopcategory-products {
@@ -58,9 +60,106 @@
     color: #555;
 }
 
+/* Hide the default arrow of the select element */
+.shopcategory-sort select {
+    appearance: none;
+    -webkit-appearance: none; /* For Safari */
+    -moz-appearance: none; /* For Firefox */
+    background: transparent; /* Make the background transparent */
+    padding-right: 2rem; /* Space for the dropdown icon */
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+    color: #939393;
+  }
+  
+  /* Container for the select and dropdown icon */
+  .shopcategory-sort {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  /* Style the dropdown icon */
+  .shopcategory-sort img {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* Make the icon non-clickable */
+  }
+  
+  /* Optional: Add hover effects */
+  .shopcategory-sort select:hover {
+    border-color: #888;
+    color: #098cff;
+  }
+  
+  /* Add some responsive styling */
+  @media screen and (max-width: 768px) {
+    .shopcategory-sort select {
+      width: 100%;
+      padding: 8px;
+    }
+  
+    .shopcategory-sort img {
+      right: 5px;
+    }
+  }
+  
+
 @media screen and (max-width: 720px) {
     .shopcategory-products{
         display: grid;
         grid-template-columns: 1fr 1fr;
     }
+}
+
+@media(max-width:800px){
+    .shopcategory-indexshort {
+        display: flex;
+        margin: 0px 60px;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .shopcategory-sort {
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 30px;
+        transition: background-color 0.3s, border-color 0.3s;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .shopcategory-sort select {
+        font-size: 12px;
+    }
+}
+@media(max-width:500px){
+    .shopcategory-indexshort {
+        display: flex;
+        margin: 0px 50px;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 10px;
+    }
+    
+    .shopcategory-sort {
+        padding: 3px 6px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        transition: background-color 0.3s, border-color 0.3s;
+        cursor: pointer;
+        font-size: 10px;
+    
+    }
+    .shopcategory-sort select {
+        font-size: 12px;
+        padding: 0px 6px;
+        margin: 0px 5px;
+    }
+
 }

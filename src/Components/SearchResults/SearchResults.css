@@ -1,4 +1,4 @@
-/* General container styling */
+General container styling
 .Searchresult {
   display: flex;
   flex-wrap: wrap;
@@ -61,4 +61,5 @@
   width: 100%;
   font-size: 18px;
   margin-top: 50px;
+  gap: 20px;
 }

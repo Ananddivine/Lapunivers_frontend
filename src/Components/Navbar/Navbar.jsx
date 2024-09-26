@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { NavLink, useNavigate, useLocation, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faCartArrowDown } from "@fortawesome/free-solid-svg-icons";
 import logos from "../Assets/Logolapy.png";
 import './Navbar.css';
+import { ShopContext } from "../../Context/ShopContext";
 
 function Navigation() {
     const [showDropdown, setDropdown] = useState(false);
@@ -12,6 +13,8 @@ function Navigation() {
     const location = useLocation();
     const [isNavbarOpen, setNavbarOpen] = useState(false);
     const [hasNewNotification, setHasNewNotification] = useState(false);
+    const { getTotalCartItems } = useContext(ShopContext);
+    const navbarRef = useRef(null);
 
     const handleNavbarToggle = () => {      
         setNavbarOpen(!isNavbarOpen);
@@ -90,11 +93,23 @@ function Navigation() {
         localStorage.removeItem('username');
         localStorage.removeItem('auth-token');
         localStorage.removeItem('user-email');
-        navigate('/Home')
-    }
+        window.location.reload(); // This will refresh the page
+    };
+    const handleClickOutside = (event) => {
+        if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+            setNavbarOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
-        <section id="nav-bar">
+        <section id="nav-bar" ref={navbarRef}>
             <nav className="navbar navbar-expand-lg navbar-dark bg-light fixed-top">
                 <NavLink to="/">
                     <div className="logo">
@@ -117,7 +132,14 @@ function Navigation() {
                         </div>
                     )}
                 </div>
-
+                {username && (
+        <div className="nav-cart">
+            <div className="nav-cart-count">{getTotalCartItems()}</div>
+            <NavLink to="/cart">
+                <FontAwesomeIcon className="cart-icon" icon={faCartArrowDown} />
+            </NavLink>
+        </div>
+    )}
                 <button
                     className="navbar-toggler"
                     type="button"

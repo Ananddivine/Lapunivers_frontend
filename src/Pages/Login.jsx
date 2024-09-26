@@ -41,9 +41,10 @@ const Login = () => {
       const responseData = await response.json();
 
       if (response.ok && responseData.success) {
-        localStorage.setItem('auth-token', responseData.token);
+        localStorage.setItem('auth-token', responseData.authToken);
         localStorage.setItem('user-email', formData.email);
         localStorage.setItem('username', responseData.name);
+        localStorage.setItem('userId', responseData.id);
         toast.success('Login successful! Redirecting...');
         setTimeout(() => window.location.replace("/welcome"), 2000);
       } else {

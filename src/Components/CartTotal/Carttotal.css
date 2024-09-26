@@ -1,0 +1,102 @@
+/* Ensure the cart total section is positioned to the top-right */
+.carttotal {
+    position: absolute;
+    top: 50px; /* Adjust this value to move it vertically */
+    right: 50px; /* Adjust this value to move it horizontally */
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px; /* You can adjust this width as needed */
+    color: #fff;
+    z-index: 10;
+}
+
+/* Styling for the cart item details */
+.cartitemtotal-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    color: #fff;
+}
+
+/* Button styling */
+.cartitemstotal button {
+    width: 100%;
+    height: 58px;
+    outline: none;
+    border: none;
+    color: #fff;
+    background: #ff5a5a;
+    font-size: 20px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cartitemstotal button:hover {
+    background: #e14e4e;
+}
+
+@media(max-width: 1280px) {
+    .carttotal{
+        position: absolute;
+       right: 5px;
+    }
+}
+
+@media(max-width: 1020px) {
+    .carttotal{
+        position: absolute;
+        right: 1px;
+        top: 60px;
+
+    }
+   
+    .carttotal h1{
+    font-size: 20px;
+    }
+    .cartitemtotal-item p{
+        font-size: 18px;
+    }
+    .cartitemtotal-item{
+        padding: 7px 0px;
+    }
+}
+
+@media(max-width: 840px) {
+    .carttotal{
+        position: static;
+        margin-right: 50px;
+
+    }
+    .carttotal h1{
+        font-size: 20px;
+        font-weight: 500;
+    }
+    .cartitemstotal-item{
+        padding: 10px 0px;
+    }
+    .cartitemstotal-item p{
+        font-size: 14px;
+    }
+}
+
+
+@media(max-width: 500px) {
+    .carttotal{
+        position: static;
+        margin-right: 50px;
+
+    }
+    .carttotal h1{
+        font-size: 13px;
+        font-weight: 500;
+    }
+    .cartitemstotal-item{
+        padding: 10px 0px;
+    }
+    .cartitemstotal-item p{
+        font-size: 8px;
+    }
+}

@@ -161,7 +161,7 @@
   }
 
   .forgot-password-link{
-    color: #FF5733!important; /* Or whatever color you prefer */
+    color: #FF5733!important;
     margin-top: 10px;
     display: block;
     padding: 5px 12px;
@@ -180,7 +180,7 @@
   }
 
 
-  /* --------Register Form--------- */
+
 
   .register-container{
     display: flex;

@@ -1,0 +1,117 @@
+.flex input{
+outline: none;
+}
+
+.flex input{
+  width: 25%;
+  margin: 0;
+  padding: 0;
+}
+.width-full input{
+  width: 54%;
+
+}
+
+
+.payment-method {
+  margin-top: 380px; 
+  margin-left: -200px;
+  width: max-content;
+  position: absolute;
+  
+}
+
+.payment-options label{
+ margin: 0px 10px;
+  display: inline-block; 
+ padding: 0px 20px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  background: #cccccc59;
+  border-radius: 5px;
+
+}
+
+.payment-options input[type="radio"] {
+  margin-right: 3px; /* Space between radio button and text */
+
+}
+
+.placeorder-button{
+  width: 100%;
+  padding: 10px 10px;
+  margin: 10px 20px;
+}
+.placeorder-button button{
+  padding: 0px 20px;
+  margin: 0px 30px;
+  width: 50%;
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #ffffff97;
+}
+@media(max-width: 1080px){
+
+.flex input{
+  width: 25%;
+  margin: 0;
+  padding: 0;
+}
+.width-full input{
+  width: 55%;
+
+}
+.payment-method {
+  margin-top: 300px;
+  margin-left: -90px;
+  position: static;
+}
+.payment-options label{
+  margin: 0px 3px;
+  padding: 0px 10px;
+}
+
+
+}
+
+@media(max-width: 800px){
+
+  .flex input{
+    width: 40%;
+    gap: 1px;
+  }
+  .width-full input{
+    width: 86%;
+  
+  }
+  .payment-method {
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+  .payment-options label{
+    margin: 0px 10px;
+    padding: 0px 40px;
+  }
+  }
+
+  @media(max-width: 500px){
+    .flex input{
+      width: 35%;
+      gap: 1px;
+    }
+    .width-full input{
+      width: 80%;
+    
+    }
+    .payment-method {
+      margin-top: 10px;
+      margin-left: 10px;
+    }
+    .payment-options label{
+      margin: 0px 3px;
+      padding: 0px 10px;
+    }
+
+     
+  }

@@ -37,7 +37,7 @@ const Register = () => {
       });
       const responseData = await response.json();
       if (responseData.success) {
-        localStorage.setItem('auth-token', responseData.token);
+        localStorage.setItem('auth-token', responseData.authToken);
         localStorage.setItem('user-email', formData.email);
         localStorage.setItem('username', formData.username);
         toast.success('Signup successful! Redirecting...');

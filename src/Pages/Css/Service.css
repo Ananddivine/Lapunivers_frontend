@@ -184,7 +184,7 @@
     background: transparent;
 }
 
-/* Service.css */
+
 
   .feed-container {
     overflow: hidden;
@@ -196,15 +196,15 @@
   
   .feed {
     width: 50%;
-    animation: scroll 20s linear infinite; /* Scroll animation */
+    animation: scroll 20s linear infinite;
   }
   
   @keyframes scroll {
     0% {
-      transform: translateY(100%); /* Start below the container */
+      transform: translateY(100%); 
     }
     100% {
-      transform: translateY(-100%); /* End above the container */
+      transform: translateY(-100%); 
     }
   }
 

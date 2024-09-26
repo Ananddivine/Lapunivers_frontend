@@ -11,7 +11,7 @@
   
   function Welcome() {
    const [username, setUsername] = useState(""); 
-  const [token, setToken] = useState("");  
+  const [email, setEmail] = useState("");  
   const [file, setFile] = useState(null);  
   const [description, setDescription] = useState("");
   const baseURL = 'https://lapuniversbackend-production.up.railway.app';
@@ -40,12 +40,12 @@
 
     useEffect(() => {
       const storedUsername = localStorage.getItem('username');
-      const storedToken = localStorage.getItem('auth-token');
+      const storedEmail = localStorage.getItem('user-email');
       if (!storedUsername) {
         navigate('/Login');
       } else {
         setUsername(storedUsername);
-        setToken(storedToken);
+        setEmail(storedEmail);
       }
     }, [navigate]);
   
@@ -67,7 +67,7 @@
       formData.append('uploadedFile', file);
       formData.append('description', description);
       formData.append('username', username);   
-      formData.append('token', token);  
+      formData.append('email', email);  
   
       try {
         await axios.post(`${baseURL}/uploadfile`, formData);
@@ -188,7 +188,8 @@
       localStorage.removeItem('username');
       localStorage.removeItem('auth-token');
       localStorage.removeItem('user-email');
-      navigate('/Home')
+      navigate('/Home');
+      window.location.reload()    
     }
 
     return (
@@ -202,13 +203,13 @@
         {uploading && <div>Loading...</div>}
         {uploadError && <div style={{ color: 'red' }}>{uploadError}</div>}
         {uploadSuccess && <div style={{ color: 'green' }}>{uploadSuccess}</div>}
-        <input
+       <div className="search-files"> <input 
           name="seaches"
           type="text"
           value={searchQuery}
           onChange={handleSearch}
           placeholder="Search Files"
-        />
+        /></div>
     <ul>
       {filteredFiles.map((file, index) => (
         <li key={index}>
