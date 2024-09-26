@@ -115,8 +115,6 @@ const Hero = () => {
             <p>Read what our customers are saying about their LAPUNIVERSE experience. Join the community of happy laptop owners!</p>
           </div>
         </div>
-          
-        <p>Copyright © 2024 All Right Reserved LapUniverse</p>
       </div>
     );
      }
