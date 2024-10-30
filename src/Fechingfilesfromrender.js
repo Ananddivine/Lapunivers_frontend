@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReply, faEdit, faTrashAlt, faSave } from '@fortawesome/free-solid-svg-icons';
-import './Pages/Css/Welcome.css';
+
 
 const Fechingfilesfromrender = () => {
     const [files, setFiles] = useState([]);

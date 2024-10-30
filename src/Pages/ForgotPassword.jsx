@@ -15,44 +15,43 @@ const ForgotPassword = () => {
   const navigate = useNavigate(); // Initialize useNavigate
 
   const handleRequestEmail = async () => {
-    if (!email) { // Check if OTP input is empty
-      toast.error('Please enter emailId!');
+    if (!email) {
+      toast.error('Please enter your email!');
       return;
     }
     try {
-      await axios.post('https://lapuniversbackend-production.up.railway.app/forgot-password', { email });
+      await axios.post('https://lapuniversbackend-production.up.railway.app/api/forgot-password/request-otp', { email });
       setStep('verify');
       toast.success('OTP sent to your email.');
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Error sending OTP.';
-    toast.error(errorMessage);
+      toast.error(errorMessage);
     }
   };
-
-
+  
   const handleVerifyOtp = async () => {
-    if (!otp) { // Check if OTP input is empty
+    if (!otp) {
       toast.error('Please enter OTP.');
       return;
     }
     try {
-      await axios.post('https://lapuniversbackend-production.up.railway.app/verify-otp', { email, otp });
+      await axios.post('https://lapuniversbackend-production.up.railway.app/api/forgot-password/verify-otp', { email, otp });
       setStep('reset');
       toast.success('OTP verified. Please enter a new password.');
     } catch (err) {
       toast.error('Invalid OTP.');
     }
   };
-
+  
   const handleResetPassword = async () => {
     if (newPassword !== confirmPassword) {
       toast.error('Passwords do not match.');
       return;
     }
     try {
-      await axios.post('https://lapuniversbackend-production.up.railway.app/reset-password', { email, newPassword });
+      await axios.post('https://lapuniversbackend-production.up.railway.app/api/forgot-password/reset-password', { email, newPassword });
       toast.success('Password reset successfully.');
-
+  
       // Redirect to login page after a short delay
       setTimeout(() => {
         navigate('/login');
@@ -61,6 +60,7 @@ const ForgotPassword = () => {
       toast.error('Error resetting password.');
     }
   };
+  
 
   return (
     <div>

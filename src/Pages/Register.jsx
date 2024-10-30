@@ -27,7 +27,7 @@ const Register = () => {
       return;
     }
     try {
-      const response = await fetch('https://lapuniversbackend-production.up.railway.app/signup', {
+      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/users/signup', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -37,9 +37,15 @@ const Register = () => {
       });
       const responseData = await response.json();
       if (responseData.success) {
+        const tokenExpiryTime = new Date().getTime() + 24 * 60 * 60 * 1000; // Set token expiry to 24 hours
+        
         localStorage.setItem('auth-token', responseData.authToken);
+        localStorage.setItem('token-expiry', tokenExpiryTime);
+        
+        if (responseData.user.name) localStorage.setItem('username', responseData.user.name);
+        if (responseData.user.id) localStorage.setItem('userId', responseData.user.id);
         localStorage.setItem('user-email', formData.email);
-        localStorage.setItem('username', formData.username);
+  
         toast.success('Signup successful! Redirecting...');
         setTimeout(() => window.location.replace("/welcome"), 2000);
       } else {

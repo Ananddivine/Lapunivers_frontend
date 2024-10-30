@@ -19,11 +19,11 @@ export const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState(getDefaultCart());
   const [cartTotal, setCartTotal] =  useState(getDefaultCart());
   const navigate = useNavigate();
-
+  const baseURL = 'https://lapuniversbackend-production.up.railway.app/api'; 
 
   useEffect(() => {
     // Fetch all products
-    fetch('https://lapuniversbackend-production.up.railway.app/allproducts')
+    fetch(`${baseURL}/products`) // Adjust to your products route
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -38,7 +38,8 @@ export const ShopContextProvider = (props) => {
 
     // Fetch cart items if the user is authenticated
     if (localStorage.getItem('auth-token')) {
-      fetch('https://lapuniversbackend-production.up.railway.app/getcart', {
+      fetch(`${baseURL}/users/getcart`, 
+        {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -64,7 +65,7 @@ export const ShopContextProvider = (props) => {
     } 
   
     try {
-        const response = await fetch('https://lapuniversbackend-production.up.railway.app/addtocart', {
+        const response = await fetch(`${baseURL}/users/addtocart`, {
             method: 'POST',
             headers: {
                 'auth-token': token, // Send the JWT here
@@ -95,7 +96,7 @@ export const ShopContextProvider = (props) => {
   const removeFromCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
     if (localStorage.getItem('auth-token')) {
-      fetch('https://lapuniversbackend-production.up.railway.app/removecartitem', {
+      fetch(`${baseURL}/users/removecartitem`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',

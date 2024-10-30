@@ -1,169 +1,126 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMicrochip, faReply, faTrashAlt, faSave } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
-import './Notification.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileAlt, faFilePdf, faFileArchive, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-function Notifications() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [files, setFiles] = useState([]);
-  const [replyUpdate, setReplyUpdate] = useState('');
-  const [replies, setReplies] = useState({});
-  const [activeReplyField, setActiveReplyField] = useState(null);
+const Notification = () => {
+  const [userIssues, setUserIssues] = useState([]);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  const baseURL = 'https://lapuniversbackend-production.up.railway.app';
-  const [searchQuery, setSearchQuery] = useState("");
-  
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const filteredFiles = files.filter(file => {
-    const description = file.description || "";
-    const filename = file.filename || "";
-    const replyTexts = (replies[file.filename] || []).join(" ").toLowerCase();
-    return (
-        description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        replyTexts.includes(searchQuery.toLowerCase())
-    );
-});
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    const storedEmail = localStorage.getItem('user-email');
-    if (!storedUsername || !storedEmail) {
-      navigate('/login');
-    } else {
-      setUsername(storedUsername);
-      setEmail(storedEmail);
-    }
+    const fetchUserIssues = async () => {
+      const token = localStorage.getItem('auth-token');
+
+      if (!token) {
+        navigate('/login'); // Redirect if token is not present
+        return;
+      }
+
+      try {
+        const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues/user-issues', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send token in the header
+          },
+        });
+
+        setUserIssues(response.data); // Update state with the fetched issues
+      } catch (error) {
+        console.error('Error fetching user issues:', error);
+        setError(error.response ? error.response.data.message : 'Error fetching issues');
+      }
+    };
+
+    fetchUserIssues();
   }, [navigate]);
 
-  useEffect(() => {
-    if (username && email) {
-      axios.get(`${baseURL}/files`)
-        .then(response => {
-          const userFiles = response.data.filter(file => file.username === username && file.email === email);
-          setFiles(userFiles);
-        })
-        .catch(error => {
-          console.error('Error fetching files:', error);
-        });
+  const deleteIssue = async (issueId) => {
+    const token = localStorage.getItem('auth-token');
+
+    if (!token) {
+      // Handle case where token is not present
+      return;
     }
-  }, [baseURL, username, email]);
 
-  const fetchReplies = (filename) => {
-    const encodedFilename = encodeURIComponent(filename);
-    axios.get(`${baseURL}/files/${encodedFilename}/replies`)
-      .then(response => {
-        console.log(`Fetched replies for ${filename}:`, response.data);
-        setReplies(prevReplies => ({
-          ...prevReplies,
-          [filename]: response.data
-        }));
-      })
-      .catch(error => {
-        console.error('Error fetching replies:', error);
+    try {
+      await axios.delete(`https://lapuniversbackend-production.up.railway.app/api/issues/issue/${issueId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Send token in the header
+        },
       });
+      // Remove the deleted issue from the state
+      setUserIssues(userIssues.filter(issue => issue._id !== issueId));
+    } catch (error) {
+      console.error('Error deleting issue:', error);
+      setError(error.response ? error.response.data.message : 'Error deleting issue');
+    }
   };
-  
-
-  const deleteFile = (filename) => {
-    axios.delete(`${baseURL}/files/${filename}`)
-      .then(response => {
-        console.log(response.data);
-        setFiles(prevFiles => prevFiles.filter(file => file.filename !== filename));
-        setReplies(prevReplies => {
-          const newReplies = { ...prevReplies };
-          delete newReplies[filename];
-          return newReplies;
-        });
-      })
-      .catch(error => {
-        console.error('Error deleting file:', error);
-      });
-  };
-
-
- 
-  const handleUpdateReply = (filename, updatedReply) => {
-    const storedUsername = localStorage.getItem('username'); // Get username from localStorage
-    const requestBody = {
-      updatedReply,
-      username: storedUsername // Include the username in the request body
-    };
-  
-    axios.put(`${baseURL}/files/${encodeURIComponent(filename)}/replies`, requestBody)
-   
-      .then(response => {
-        console.log(response.data);
-        fetchReplies(filename); // Refresh the replies after the update
-        setActiveReplyField(null); // Close the input field after saving
-      })
-      .catch(error => {
-        console.error('Error updating reply:', error);
-      });
-  };
-  
-  
 
   return (
-    <div className="notifications">
-      <h1>Notifications</h1>
-      <p>Hi {username} You Can Manage Your Uploaded Files And You can See If anyone Commant On Your File By Clicking The Show Replies Button </p>
-      <input
-        name="seaches"
-        type="text"
-        value={searchQuery}
-        onChange={handleSearch}
-        placeholder="Search Files"
-      />
-      <ul>
-        {filteredFiles.map((file, index) => (
-          <li key={file.filename}>
-            <div className="file-item">
-              <a href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faMicrochip} className="ico" />  {file.filename}
-              </a>
-              <p>{file.description}</p>
-              <button className="buttons" onClick={() => deleteFile(file.filename)}>
-                <FontAwesomeIcon icon={faTrashAlt} /> Delete File
-              </button>
-             
-             
-              <button className="buttons" onClick={() => setActiveReplyField(file.filename)}>
-                <FontAwesomeIcon icon={faReply} /> Edit Reply
-              </button>
-              {activeReplyField === file.filename && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Update reply"
-                    value={replyUpdate}
-                    onChange={(e) => setReplyUpdate(e.target.value)}
-                  />
-                  <button className="buttons" onClick={() => handleUpdateReply(file.filename, replyUpdate)}>
-                    <FontAwesomeIcon icon={faSave} /> Save
-                  </button>
-                </>
+    <div className="notification container mx-auto p-4">
+      <h1 className="text-3xl font-bold text-gray-50">Your Notifications</h1>
+
+      {error && <p className="text-red-500">{error}</p>}
+
+      <div className="mt-4">
+        {userIssues.length > 0 ? (
+          userIssues.map(issue => (
+            <div key={issue._id} className="border text-white border-gray-300 p-4 mb-4 rounded">
+              <h3 className="text-gray-300 font-bold">{issue.title}</h3>
+              <p>{issue.description}</p>
+              <p className="text-sm text-gray-600">Posted by: {issue.username || 'Unknown'}</p>
+
+              {issue.attachments.length > 0 && (
+                <div className="mt-2">
+                  <h4 className="font-semibold text-white">Attachments:</h4>
+                  <div className="attachments-container">
+                    {issue.attachments.map((attachment, index) => (
+                      <li key={index} className="flex items-center gap-2">
+                        {renderAttachment(attachment)}
+                        <a className='file-attachments' href={attachment} target="_blank" rel="noopener noreferrer">
+                          {attachment.split('/').pop()}
+                        </a>
+                      </li>
+                    ))}
+                  </div>
+                </div>
               )}
-              <button className="buttons" onClick={() => fetchReplies(file.filename)}>Show Replies</button>
-              {replies[file.filename] && (
-                <ul>
-                  {replies[file.filename].map((reply, replyIndex) => (
-                    <li key={replyIndex}>{reply}</li>
-                  ))}
-                </ul>
-              )}
+
+              {/* Delete Button */}
+              <button
+                className="mt-2 bg-red-600 text-white px-4 py-2 rounded"
+                onClick={() => deleteIssue(issue._id)}
+              >
+                <FontAwesomeIcon icon={faTrash} className="mr-2" />
+                Delete
+              </button>
             </div>
-          </li>
-        ))}
-      </ul>
+          ))
+        ) : (
+          <p>You have not uploaded any issues yet.</p>
+        )}
+      </div>
     </div>
   );
-}
+};
 
-export default Notifications;
+// Helper function to render attachments
+const renderAttachment = (attachment) => {
+  const extension = attachment.split('.').pop().toLowerCase();
+  const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(extension);
+
+  if (isImage) {
+    return <img src={attachment} alt="Attachment" className="attachment-image" />;
+  } else if (extension === 'pdf') {
+    return <FontAwesomeIcon icon={faFilePdf} className="text-red-600 w-6 h-6" />;
+  } else if (['doc', 'docx', 'txt'].includes(extension)) {
+    return <FontAwesomeIcon icon={faFileAlt} className="text-blue-600 w-6 h-6" />;
+  } else if (['zip', 'rar'].includes(extension)) {
+    return <FontAwesomeIcon icon={faFileArchive} className="text-green-600 w-6 h-6" />;
+  } else {
+    return <FontAwesomeIcon icon={faFileAlt} className="text-gray-100 w-6 h-6" />;
+  }
+};
+
+export default Notification;

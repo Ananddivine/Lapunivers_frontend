@@ -93,6 +93,7 @@ function Navigation() {
         localStorage.removeItem('username');
         localStorage.removeItem('auth-token');
         localStorage.removeItem('user-email');
+        localStorage.removeItem('userId')
         window.location.reload(); // This will refresh the page
     };
     const handleClickOutside = (event) => {

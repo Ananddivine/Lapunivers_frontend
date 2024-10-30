@@ -38,7 +38,7 @@
       console.log('Products array:', products); // Log the products array
     
       try {
-        const response = await fetch('https://lapuniversbackend-production.up.railway.app/placeorder', {
+        const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/orders/placeorder', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

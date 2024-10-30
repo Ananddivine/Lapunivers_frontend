@@ -29,7 +29,7 @@ const Login = () => {
       return;
     }
     try {
-      const response = await fetch('https://lapuniversbackend-production.up.railway.app/login', {
+      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/users/login', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -39,20 +39,24 @@ const Login = () => {
       });
 
       const responseData = await response.json();
-
+    
       if (response.ok && responseData.success) {
-        localStorage.setItem('auth-token', responseData.authToken);
-        localStorage.setItem('user-email', formData.email);
-        localStorage.setItem('username', responseData.name);
-        localStorage.setItem('userId', responseData.id);
+        const tokenExpiryTime = new Date().getTime() + 24 * 60 * 60 * 1000; // Set token expiry to 24 hours
+  
+        localStorage.setItem('auth-token', responseData.token);
+        localStorage.setItem('token-expiry', tokenExpiryTime);
+        // localStorage.setItem('user-email', formData.email);
+        localStorage.setItem('username', responseData.user.name);
+        // localStorage.setItem('userId', responseData.user.id);
+  
         toast.success('Login successful! Redirecting...');
         setTimeout(() => window.location.replace("/welcome"), 2000);
       } else {
-        toast.error(responseData.error || 'Login failed. Please try again later!');
-        if (responseData.error === "Wrong password") {
-          setPasswordError(true); // Set password error state if wrong password
+        toast.error(responseData.message || 'Login failed. Please try again later!');
+        if (responseData.message === "Invalid password") {
+          setPasswordError(true);
         }
-        setFormData({ ...formData, password: '' }); // Reset the password field
+        setFormData({ ...formData, password: '' });
       }
     } catch (error) {
       toast.error('An error occurred. Please try again.');

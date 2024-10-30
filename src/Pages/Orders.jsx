@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import Title from '../Components/Title/Title';
 import './Css/Orders.css';
-
+import { useNavigate } from 'react-router-dom';
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('https://lapuniversbackend-production.up.railway.app/myorders', {
+      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/orders/myorders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,8 +35,18 @@ const Orders = () => {
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    const token = localStorage.getItem('auth-token');
+    const username = localStorage.getItem('username');
+
+    if (!token || !username) {
+      // Token or username missing, clear localStorage and redirect to login
+      localStorage.clear();
+      navigate('/login'); // Redirect to login page
+    } else {
+      // Fetch orders if token and username are available
+      fetchOrders();
+    }
+  }, [navigate]);
 
   if (loading) {
     return <p>Loading...</p>;

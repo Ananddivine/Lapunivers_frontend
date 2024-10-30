@@ -1,261 +1,261 @@
-  import React, { useEffect, useState } from "react";
-  import axios from 'axios';
-  import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-  import { faQuoteLeft, faMicrochip } from "@fortawesome/free-solid-svg-icons";
-  import './Css/Welcome.css';
-  import { useNavigate } from 'react-router-dom';
-  import { toast, ToastContainer } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
-  import './Css/ToastStyles.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faReply, faFileAlt, faFilePdf, faFileArchive } from '@fortawesome/free-solid-svg-icons';
+import './Css/welcome.css';
 
-  
-  function Welcome() {
-   const [username, setUsername] = useState(""); 
-  const [email, setEmail] = useState("");  
-  const [file, setFile] = useState(null);  
-  const [description, setDescription] = useState("");
-  const baseURL = 'https://lapuniversbackend-production.up.railway.app';
-  const [files, setFiles] = useState([]);
-  const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState(null);
-  const [uploadSuccess, setUploadSuccess] = useState(null);
+const Welcome = () => {
+  const [issues, setIssues] = useState([]);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [attachments, setAttachments] = useState([]);
+  const [error, setError] = useState('');
+  const [replyMessage, setReplyMessage] = useState('');
+  const [openReplyBox, setOpenReplyBox] = useState(null); // Track open reply box
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
 
-    const handleSearch = (e) => {
-      setSearchQuery(e.target.value);
-    };
-
-    const filteredFiles = files.filter(file => {
-      const description = file.description || "";
-      const filename = file.filename || "";
-      const replies = file.replies || [];
-      const replyTexts = replies.join(" ").toLowerCase();
-      return (
-        description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        replyTexts.includes(searchQuery.toLowerCase())
-      );
-    });
-
-    useEffect(() => {
-      const storedUsername = localStorage.getItem('username');
-      const storedEmail = localStorage.getItem('user-email');
-      if (!storedUsername) {
-        navigate('/Login');
-      } else {
-        setUsername(storedUsername);
-        setEmail(storedEmail);
-      }
-    }, [navigate]);
-  
-    const handleUpload = async () => {
-      if (!file) {
-        toast.error('No file selected.');
-        return;
-      }
-      if (!description) {
-        toast.error('Please discribe about the file!');
-        return;
-      }
-  
-      setUploading(true);
-      setUploadError(null);
-      toast.success(null);
-  
-      const formData = new FormData();
-      formData.append('uploadedFile', file);
-      formData.append('description', description);
-      formData.append('username', username);   
-      formData.append('email', email);  
-  
-      try {
-        await axios.post(`${baseURL}/uploadfile`, formData);
-        console.log('File uploaded successfully.');
-         toast.success('File uploaded successfully.');
-  
-        setTimeout(() => {
-          setUploadSuccess(null);
-        }, 3000);
-  
-        setFile(null);
-        setDescription("");
-      } catch (error) {
-        toast.error('Error uploading file:', error);
-        setUploadError('Error uploading file. Please try again.');
-  
-        setTimeout(() => {
-          setUploadError(null);
-        }, 3000);
-      } finally {
-        setUploading(false);
-  
-        axios.get(`${baseURL}/files`)
-          .then(response => {
-            setFiles(response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching files:', error);
-          });
-      }
-    };
-  
-    const handleFileChange = (e) => {
-      setFile(e.target.files[0]);
-    };
-
-    const handleDescriptionChange = (e) => {
-      setDescription(e.target.value);
-    };
-
-    useEffect(() => {
-      axios.get(`${baseURL}/files`)
-        .then(response => {
-          setFiles(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching files:', error);
-        });
-    }, [baseURL]);
-
-    const handleReply = (index) => {
-      const updatedFiles = [...files];
-      updatedFiles[index].showReply = !updatedFiles[index].showReply;
-      setFiles(updatedFiles);
-    };
-
-    const handleReplySubmit = (index, filename) => {
-      if (files[index].replyText && files[index].replyText.trim() !== "") {
-        const replyWithUsername = `${username} :-  ${files[index].replyText}`;
-        console.log('Reply text:', replyWithUsername);
-    
-        const updatedFiles = [...files];
-        updatedFiles[index] = {
-          ...updatedFiles[index],
-          replies: updatedFiles[index].replies || [],
-          replyText: "",
-          showReply: false
-        };
-        updatedFiles[index].replies.push(replyWithUsername);
-        console.log('Updated files:', updatedFiles);
-    
-        setFiles(updatedFiles);
-    
-        const encodedFilename = encodeURIComponent(filename);
-        axios.post(`${baseURL}/files/${encodedFilename}/replies`, { reply: replyWithUsername })
-          .then(_response => {
-            console.log('Reply submitted successfully:', replyWithUsername);
-          })
-          .catch(error => {
-            toast.error('Error submitting reply:', error);
-          });
-      } else {
-        alert("Please enter a reply.");
-      }
-    };
-    
-
-    useEffect(() => {
-      axios.get(`${baseURL}/files`)
-        .then(response => {
-          setFiles(response.data);
-          response.data.forEach(file => {
-            const encodedFilename = encodeURIComponent(file.filename);
-            axios.get(`${baseURL}/files/${encodedFilename}/replies`)
-              .then(replyResponse => {
-                setFiles(prevFiles => prevFiles.map(prevFile => {
-                  if (prevFile.filename === file.filename) {
-                    return {
-                      ...prevFile,
-                      replies: replyResponse.data
-                    };
-                  }
-                  return prevFile;
-                }));
-              })
-              .catch(error => {
-                console.error(`Error fetching replies for ${file.filename}:`, error);
-              });
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching files:', error);
-        });
-    }, [baseURL]);
-    
-
-    const handelLogout = () =>{
-      localStorage.removeItem('username');
-      localStorage.removeItem('auth-token');
-      localStorage.removeItem('user-email');
-      navigate('/Home');
-      window.location.reload()    
+  useEffect(() => {
+    const token = localStorage.getItem('auth-token');
+    const username = localStorage.getItem('username');
+    if (!token || !username) {
+      navigate('/login');
     }
 
-    return (
-      <div className="welcome">
-      <button className="logout" onClick={handelLogout}>LogOut</button>
-        <h1>{`WELCOME ${username}`}</h1>
-        <p>Upload Bios File</p>
-        <input className="filechoos" name="file"  type="file" onChange={handleFileChange} disabled={uploading} />
-        <input name="discribe" type="text" value={description} onChange={handleDescriptionChange} placeholder="Description" disabled={uploading} required/>
-        <button className="uploadbutton" onClick={handleUpload} disabled={uploading}>Upload File</button>
-        {uploading && <div>Loading...</div>}
-        {uploadError && <div style={{ color: 'red' }}>{uploadError}</div>}
-        {uploadSuccess && <div style={{ color: 'green' }}>{uploadSuccess}</div>}
-       <div className="search-files"> <input 
-          name="seaches"
-          type="text"
-          value={searchQuery}
-          onChange={handleSearch}
-          placeholder="Search Files"
-        /></div>
-    <ul>
-      {filteredFiles.map((file, index) => (
-        <li key={index}>
-          {!file.filename.endsWith('.txt') && (
-            <React.Fragment>
-              <div className="bored">
-                <p>{file.description}</p>
-                <a className="downloadsections" href={`${baseURL}/upload/${file.filename}`} download target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
-                </a>
-                {file.replies && (
-                  <ul style={{color: '#fff'}}>
-                    {file.replies.map((reply, replyIndex) => (
-                      <li key={replyIndex}>{reply}</li>
-                    ))}
-                  </ul>
-                )}
-                {file.showReply ? (
-                  <div className="replycontainer">    
-                    <textarea
-                      value={file.replyText || ""}
-                      onChange={(e) => {   
-                        const updatedFiles = [...files];
-                        updatedFiles[index].replyText = e.target.value;
-                        setFiles(updatedFiles);
-                      }}
-                      placeholder="Enter your reply..."
-                    />
-                    <button className="replysubmit" onClick={() => handleReplySubmit(index, file.filename)}>Submit</button>
-                  </div>
-                ) : (
-                    <button className="buttonicon" onClick={() => handleReply(index)} title="Reply">
-                      <FontAwesomeIcon icon={faQuoteLeft} className="icon" /> Reply
-                  </button>
-                )} 
-                
-              </div>
-            </React.Fragment>
-          )}
-        </li>
-      ))}
-    </ul>
+    const fetchIssues = async () => {
+      try {
+        const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/issues');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setIssues(data);
+      } catch (error) {
+        console.error('Error fetching issues:', error);
+        setError(error.message);
+      }
+    };
 
- <ToastContainer />
-  </div>
-  );
+    fetchIssues();
+  }, [navigate]);
+
+  useEffect(() => {
+    const tokenExpiryTime = localStorage.getItem('token-expiry');
+    const currentTime = new Date().getTime();
+
+    if (!tokenExpiryTime || currentTime > tokenExpiryTime) {
+      localStorage.clear();
+      toast.error('Session expired. Please log in again.');
+      window.location.href = '/login';
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('auth-token');
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      attachments.forEach((file) => {
+        formData.append('attachments', file);
+      });
+
+      await axios.post('https://lapuniversbackend-production.up.railway.app/api/issues', formData, config);
+
+      setTitle('');
+      setDescription('');
+      setAttachments([]);
+      const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues', config);
+      setIssues(response.data);
+    } catch (err) {
+      setError('Error posting your issue');
+      console.error(err);
+    }
+  };
+
+  const handleReply = async (issueId) => {
+    try {
+      const token = localStorage.getItem('auth-token');
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.post(
+        `https://lapuniversbackend-production.up.railway.app/api/issues/${issueId}/reply`,
+        { message: replyMessage },
+        config
+      );
+
+      setReplyMessage('');
+      setOpenReplyBox(null); // Close the reply box after submitting
+      setIssues((prevIssues) =>
+        prevIssues.map((issue) => (issue._id === issueId ? response.data : issue))
+      );
+    } catch (err) {
+      setError('Error sending reply');
+      console.error(err);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setAttachments(files);
   }
 
-  export default Welcome;
+  const toggleReplyBox = (issueId) => {
+    setOpenReplyBox(openReplyBox === issueId ? null : issueId);
+  };
+
+  const renderAttachment = (attachment) => {
+    const extension = attachment.split('.').pop().toLowerCase();
+    const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(extension);
+  
+    if (isImage) {
+      return (
+        <img 
+          src={attachment} 
+          alt="Attachment" 
+          className="attachment-image" // Apply the CSS class here
+        />
+      );
+    } else if (extension === 'pdf') {
+      return <FontAwesomeIcon icon={faFilePdf} className="text-red-600 w-6 h-6" />;
+    } else if (['doc', 'docx', 'txt'].includes(extension)) {
+      return <FontAwesomeIcon icon={faFileAlt} className="text-blue-600 w-6 h-6" />;
+    } else if (['zip', 'rar'].includes(extension)) {
+      return <FontAwesomeIcon icon={faFileArchive} className="text-green-600 w-6 h-6" />;
+    } else {
+      return <FontAwesomeIcon icon={faFileAlt} className="text-gray-100 w-6 h-6" />;
+    }
+  };
+  
+
+  return (
+    <div className="welcome container mx-auto p-4">
+      <h1 className="text-3xl font-bold text-gray-50">Welcome!</h1>
+      <p className="mt-4">You can start posting your issues below or reply to existing threads.</p>
+
+      <form onSubmit={handleSubmit} className="mt-4">
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="block w-full p-2 border border-gray-300 rounded mb-4"
+          required
+        />
+        <textarea
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="block w-full p-2 border border-gray-300 rounded mb-4"
+          required
+        ></textarea>
+        
+        <input
+          type="file"
+          multiple
+          onChange={handleFileChange}
+          className="block w-full p-2 border border-gray-300 rounded mb-4"
+        />
+        
+        <div className="mb-4">
+          {attachments.length > 0 && (
+            <p className="text-gray-600">Selected files: {attachments.map((file) => file.name).join(', ')}</p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+        >
+          Post Issue
+        </button>
+        {error && <p className="text-red-500">{error}</p>}
+      </form>
+
+      <h2 className="mt-8 text-2xl font-semibold">Existing Issues</h2>
+      <div className="mt-4">
+        {issues.length > 0 ? (
+          issues.map((issue) => (
+            <div key={issue._id} className="border text-white border-gray-300 p-4 mb-4 rounded">
+              <h3 className="text-gray-300 font-bold">{issue.title}</h3>
+              <p>{issue.description}</p>
+              <p className="text-sm text-gray-600">Posted by: {issue.username || 'Unknown'}</p>
+
+              {issue.attachments.length > 0 && (
+                <div className="mt-2">
+                  <h4 className="font-semibold text-white">Attachments:</h4>
+                  <div className="attachments-container">
+                    {issue.attachments.map((attachment, index) => (
+                      <li key={index} className="flex items-center gap-2">
+                        {renderAttachment(attachment)}
+                        <a className='file-attachments' href={attachment} target="_blank" rel="noopener noreferrer">
+                          {attachment.split('/').pop()}
+                        </a>
+                      </li>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-4">
+                <h4 className="font-semibold">Replies:</h4>
+                {issue.replies && issue.replies.length > 0 ? (
+                  issue.replies.map((reply, index) => (
+                    <div key={index} className="p-2 border border-gray-500 rounded mt-2">
+                      <p>{reply.message}</p>
+                      <p className="text-sm text-gray-600">Replied by: {reply.username}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No replies yet</p>
+                )}
+              </div>
+
+              <button
+                onClick={() => toggleReplyBox(issue._id)}
+                className="mt-2 text-blue-500 hover:text-blue-600"
+              >
+                <FontAwesomeIcon icon={faReply} /> Reply
+              </button>
+
+              {openReplyBox === issue._id && (
+                <div className="mt-2">
+                  <textarea
+                    placeholder="Write your reply..."
+                    value={replyMessage}
+                    onChange={(e) => setReplyMessage(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                  ></textarea>
+                  <button
+                    onClick={() => handleReply(issue._id)}
+                    className="w-full bg-blue-500 text-white p-2 mt-2 rounded hover:bg-blue-600"
+                  >
+                    Submit Reply
+                  </button>
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <p>No issues posted yet.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Welcome;

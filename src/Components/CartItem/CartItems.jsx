@@ -25,7 +25,7 @@ const CartItems = () => {
             <div className='cartitems-format cartitems-format-main'>
               <img src={e.images && e.images.length > 0 ? e.images[0] : 'https://via.placeholder.com/150'} alt={e.name} className='carticon-product-icon' />
               <p>{e.name}</p>
-              <p>${e.new_price.toFixed(2)}</p>
+              <p>${e.new_price.toFixed()}</p>
               <button className='cartitems-quantitiy'>{cartItems[e.id]}</button>
               <p>${(e.new_price * cartItems[e.id]).toFixed(2)}</p>
               <img className='cartitem-remove-icon' src={remove_icon} onClick={() => removeFromCart(e.id)} alt="Remove item" />
@@ -42,7 +42,7 @@ const CartItems = () => {
           <div>
             <div className="cartitem-total-item">
               <p>Subtotal</p>
-              <p>${getTotalCartAmount().toFixed(2)}</p>
+              <p>${getTotalCartAmount().toFixed()}</p>
             </div>
             <div className='cartitem-total-item'>
               <p>Shipping Fee</p>
@@ -50,7 +50,7 @@ const CartItems = () => {
             </div>
             <div className='cartitem-total-item'>
               <h3>Total</h3>
-              <h3>${getTotalCartAmount().toFixed(2)}</h3>
+              <h3>${getTotalCartAmount().toFixed()}</h3>
             </div>
           </div>
           <button onClick={() => navigate('/place-order')}>Proceed to checkout</button>
