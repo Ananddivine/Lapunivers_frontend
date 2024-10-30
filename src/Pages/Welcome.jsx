@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReply, faFileAlt, faFilePdf, faFileArchive } from '@fortawesome/free-solid-svg-icons';
-import './Css/welcome.css';
+import './Css/Welcome.css';
 
 const Welcome = () => {
   const [issues, setIssues] = useState([]);
