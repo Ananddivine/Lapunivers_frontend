@@ -10,7 +10,6 @@ import Register from './Pages/Register';
 import Contact from './Pages/Contact';
 import Welcome from './Pages/Welcome';
 import ForgotPassword from './Pages/ForgotPassword';
-import Fechingfilesfromrender from './Fechingfilesfromrender';
 import Notifications from './Components/Notification/Notification';
 import { ShopContext } from './Context/ShopContext';
 import ShopCategory from './Pages/ShopCategory';
@@ -20,7 +19,6 @@ import SearchiItemDisplay from './Components/Searchitem/SearchiItemDisplay';
 import Product from './Pages/Product';
 import PlaceOrder from './Pages/PlaceOrder';
 import { ShopContextProvider } from './Context/ShopContext';
-
 import './App.css';
 import Orders from './Pages/Orders';
 
@@ -53,7 +51,6 @@ function App() {
             <Route path=":productId" element={<Product />} />
           </Route>
           <Route path='/ShopContext' element={<ShopContext />} />
-          <Route path='/fechingfilesfromrender' element={<Fechingfilesfromrender />} />
           <Route path='/battery' element={<ShopCategory category="battery" />} />
           <Route path='/keyboard' element={<ShopCategory category="keyboard" />} />
           <Route path='/laptop' element={<ShopCategory category="laptop" />} />

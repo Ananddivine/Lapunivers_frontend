@@ -12,28 +12,31 @@ const Notification = () => {
   useEffect(() => {
     const fetchUserIssues = async () => {
       const token = localStorage.getItem('auth-token');
-
+  
       if (!token) {
         navigate('/login'); // Redirect if token is not present
         return;
       }
-
+  
       try {
         const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues/user-issues', {
           headers: {
             Authorization: `Bearer ${token}`, // Send token in the header
           },
         });
-
-        setUserIssues(response.data); // Update state with the fetched issues
+  
+        // Sort issues by isRead status, unread first
+        const sortedIssues = response.data.sort((a, b) => a.isRead - b.isRead);
+        setUserIssues(sortedIssues); // Update state with sorted issues
       } catch (error) {
         console.error('Error fetching user issues:', error);
         setError(error.response ? error.response.data.message : 'Error fetching issues');
       }
     };
-
+  
     fetchUserIssues();
   }, [navigate]);
+  
 
   const deleteIssue = async (issueId) => {
     const token = localStorage.getItem('auth-token');
@@ -64,42 +67,65 @@ const Notification = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="mt-4">
-        {userIssues.length > 0 ? (
-          userIssues.map(issue => (
-            <div key={issue._id} className="border text-white border-gray-300 p-4 mb-4 rounded">
-              <h3 className="text-gray-300 font-bold">{issue.title}</h3>
-              <p>{issue.description}</p>
-              <p className="text-sm text-gray-600">Posted by: {issue.username || 'Unknown'}</p>
+      {userIssues.length > 0 ? (
+  userIssues.map(issue => (
+    <div
+      key={issue._id}
+      className={`border text-white border-gray-300 p-4 mb-4 rounded ${issue.isRead ? 'bg-gray-800' : 'bg-blue-600'}`} // Mark unread issues
+    >
+      <h3 className="text-gray-300 font-bold">{issue.title}</h3>
+      <p>{issue.description}</p>
+      <p className="text-sm text-gray-600">Posted by: {issue.username || 'Unknown'}</p>
 
-              {issue.attachments.length > 0 && (
-                <div className="mt-2">
-                  <h4 className="font-semibold text-white">Attachments:</h4>
-                  <div className="attachments-container">
-                    {issue.attachments.map((attachment, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        {renderAttachment(attachment)}
-                        <a className='file-attachments' href={attachment} target="_blank" rel="noopener noreferrer">
-                          {attachment.split('/').pop()}
-                        </a>
-                      </li>
-                    ))}
-                  </div>
-                </div>
-              )}
+      {/* Display replies */}
+      {issue.replies && issue.replies.length > 0 && (
+        <div className="mt-4">
+          <h4 className="font-semibold text-white">Replies:</h4>
+          <ul className="space-y-2">
+            {issue.replies.map((reply, index) => (
+              <li key={index} className="text-gray-300">
+                <p>{reply.message}</p>
+                <p className="text-xs text-gray-600">Replied by: {reply.username}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-              {/* Delete Button */}
-              <button
-                className="mt-2 bg-red-600 text-white px-4 py-2 rounded"
-                onClick={() => deleteIssue(issue._id)}
-              >
-                <FontAwesomeIcon icon={faTrash} className="mr-2" />
-                Delete
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>You have not uploaded any issues yet.</p>
-        )}
+      {issue.attachments.length > 0 && (
+        <div className="mt-2">
+          <h4 className="font-semibold text-white">Attachments:</h4>
+          <div className="attachments-container">
+            {issue.attachments.map((attachment, index) => (
+              <li key={index} className="flex items-center gap-2">
+                {renderAttachment(attachment)}
+                <a
+                  className="file-attachments"
+                  href={attachment}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {attachment.split('/').pop()}
+                </a>
+              </li>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Delete Button */}
+      <button
+        className="mt-2 bg-red-600 text-white px-4 py-2 rounded"
+        onClick={() => deleteIssue(issue._id)}
+      >
+        <FontAwesomeIcon icon={faTrash} className="mr-2" />
+        Delete
+      </button>
+    </div>
+  ))
+) : (
+  <p>You have not uploaded any issues yet.</p>
+)}
       </div>
     </div>
   );
