@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReply, faFileAlt, faFilePdf, faFileArchive } from '@fortawesome/free-solid-svg-icons';
@@ -11,18 +12,24 @@ const Welcome = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [attachments, setAttachments] = useState([]);
-  const [error, setError] = useState('');
   const [replyMessage, setReplyMessage] = useState('');
   const [openReplyBox, setOpenReplyBox] = useState(null); // Track open reply box
+  const [error, setError] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const toggleForm = () => {
+    setIsFormOpen(!isFormOpen);
+  };
+
+  if (error) {
+    toast.error(error);
+    setError(null); // Clear the error after showing
+  }
+  
+ // Manage form visibility
   const navigate = useNavigate();
-
   useEffect(() => {
-    const token = localStorage.getItem('auth-token');
-    const username = localStorage.getItem('username');
-    if (!token || !username) {
-      navigate('/login');
-    }
-
+    
     const fetchIssues = async () => {
       try {
         const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/issues');
@@ -34,6 +41,7 @@ const Welcome = () => {
       } catch (error) {
         console.error('Error fetching issues:', error);
         setError(error.message);
+        toast.error(error.message);
       }
     };
 
@@ -51,8 +59,24 @@ const Welcome = () => {
     }
   }, []);
 
+    // Check if the user is logged in
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('auth-token');
+      const username = localStorage.getItem('username');
+  
+      if (!token || !username) {
+        toast.error('Please log in first.');
+        navigate('/login');
+        return false;
+      }
+      return true;
+    };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if the user is logged in before submitting
+    if (!checkLoginStatus()) return;
+
     try {
       const token = localStorage.getItem('auth-token');
       const config = {
@@ -77,12 +101,15 @@ const Welcome = () => {
       const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues', config);
       setIssues(response.data);
     } catch (err) {
-      setError('Error posting your issue');
+      toast.error('Error posting your issue');
       console.error(err);
     }
   };
 
   const handleReply = async (issueId) => {
+    // Check if the user is logged in before replying
+    if (!checkLoginStatus()) return;
+
     try {
       const token = localStorage.getItem('auth-token');
       const config = {
@@ -104,7 +131,7 @@ const Welcome = () => {
         prevIssues.map((issue) => (issue._id === issueId ? response.data : issue))
       );
     } catch (err) {
-      setError('Error sending reply');
+      toast.error('Error sending reply');
       console.error(err);
     }
   };
@@ -141,50 +168,55 @@ const Welcome = () => {
     }
   };
   
-
   return (
     <div className="welcome container mx-auto p-4">
       <h1 className="text-3xl font-bold text-gray-50">Welcome!</h1>
       <p className="mt-4">You can start posting your issues below or reply to existing threads.</p>
 
-      <form onSubmit={handleSubmit} className="mt-4">
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="block w-full p-2 border border-gray-300 rounded mb-4"
-          required
-        />
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="block w-full p-2 border border-gray-300 rounded mb-4"
-          required
-        ></textarea>
-        
-        <input
-          type="file"
-          multiple
-          onChange={handleFileChange}
-          className="block w-full p-2 border border-gray-300 rounded mb-4"
-        />
-        
-        <div className="mb-4">
-          {attachments.length > 0 && (
-            <p className="text-gray-600">Selected files: {attachments.map((file) => file.name).join(', ')}</p>
-          )}
-        </div>
+      {/* Toggle form button */}
+      <button onClick={toggleForm} className="btn btn-secondary">
+        {isFormOpen ? 'Cancel' : 'Post Issue'}
+      </button>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-        >
-          Post Issue
-        </button>
-        {error && <p className="text-red-500">{error}</p>}
-      </form>
+      {isFormOpen && (
+        <form onSubmit={handleSubmit} className="mt-4">
+          <input
+            type="text"
+            placeholder="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="block w-full p-2 border border-gray-300 rounded mb-4"
+            required
+          />
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="block w-full p-2 border border-gray-300 rounded mb-4"
+            required
+          ></textarea>
+          
+          <input
+            type="file"
+            multiple
+            onChange={handleFileChange}
+            className="block w-full p-2 border border-gray-300 rounded mb-4"
+          />
+          
+          <div className="mb-4">
+            {attachments.length > 0 && (
+              <p className="text-gray-600">Selected files: {attachments.map((file) => file.name).join(', ')}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary"
+          >
+            Post Issue
+          </button>
+        </form>
+      )}
 
       <h2 className="mt-8 text-2xl font-semibold">Existing Issues</h2>
       <div className="mt-4">
@@ -227,7 +259,7 @@ const Welcome = () => {
 
               <button
                 onClick={() => toggleReplyBox(issue._id)}
-                className="mt-2 text-blue-500 hover:text-blue-600"
+                class="btn btn-primary"
               >
                 <FontAwesomeIcon icon={faReply} /> Reply
               </button>
@@ -242,7 +274,7 @@ const Welcome = () => {
                   ></textarea>
                   <button
                     onClick={() => handleReply(issue._id)}
-                    className="w-full bg-blue-500 text-white p-2 mt-2 rounded hover:bg-blue-600"
+                  class="btn btn-primary"
                   >
                     Submit Reply
                   </button>
@@ -254,6 +286,8 @@ const Welcome = () => {
           <p>No issues posted yet.</p>
         )}
       </div>
+
+      <ToastContainer />
     </div>
   );
 };

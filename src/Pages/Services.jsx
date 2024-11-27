@@ -82,7 +82,10 @@ function Services() {
 ];
 
 
-
+useEffect(() => {
+  // Scroll to top whenever the component mounts
+  window.scrollTo(0, 0);
+}, []);
 
 
 useEffect(() => {

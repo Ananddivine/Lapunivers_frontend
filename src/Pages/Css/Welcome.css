@@ -46,7 +46,7 @@
     margin-bottom: 10px;
   }
   
-  .welcome button {
+  .welcome form button {
     width: 50%;
     align-items: center;
     background-color: #007bff; /* Blue color for buttons */
@@ -58,8 +58,8 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
-  
- .welcome button:hover {
+   
+ .welcome form button:hover {
     background-color: #0056b3; /* Darker blue on hover */
   }
   
@@ -79,7 +79,7 @@
     background-color: #fafafa;
   }
   
-  .welcome .reply-button {
+  .welcome .mt-4 .reply-button {
     margin-top: 10px;
     color: #007bff;
     cursor: pointer;

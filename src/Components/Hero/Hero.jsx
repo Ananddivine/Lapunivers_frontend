@@ -65,11 +65,11 @@ const Hero = () => {
      <div className='row'>
      <div className='colums'>
      <h1>Laptop Services</h1>
-     <p>Where The Laptops Get serviced By The LapUniverse With Advance L6 Chiplevel Service. The Brand New Laptops, Renewd Laptops, For Rentels And Sales</p>
+     <p>Where The Laptops Get serviced By The LapUniverse With Advance L6 Chiplevel Service.</p>
      </div>
      <div className='colums'>
-     <h1>something</h1>
-     <p>Elevate your business with Lapuivers' laptop rentals. Access cutting-edge technology on demand, empowering your journey towards success without the hassle of ownership.</p>
+     <h1>LapUniverse</h1>
+     <p>Elevate your business with Lapuivers' Access cutting-edge technology on demand, empowering your journey towards success without the hassle of ownership.</p>
      </div>
      </div>
        

@@ -3,7 +3,7 @@
 /* General styles for the component */
 .about-container {
     text-align: center;
-    background-color: #001f3f;
+    background-color: #050d16;
     color: white;
     padding: 40px;
 }
@@ -29,7 +29,7 @@
 }
 
 .text-box {
-    background-color: #003366;
+    background-color: #011c36;
     padding: 20px;
     border-radius: 8px;
     width: 200px;
