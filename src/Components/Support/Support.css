@@ -1,0 +1,57 @@
+/* About.css */
+
+/* General styles for the component */
+.support-service {
+    text-align: center;
+    background-color: #ffffff;
+    color: white;
+    padding: 40px;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+
+}
+.support-service-container{
+    height: max-content;
+    width: 100%;
+    padding: 20px 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    flex-wrap: wrap;
+    border-radius: 10px;
+}
+
+.support-service-content{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    flex-wrap: wrap; /* Allows items to wrap for smaller screens */
+    cursor: pointer;
+}
+
+.support-service-text-box{
+    background-color: #e6f0fb;
+    font-size: 2rem;
+    color: #3c4e57;
+    padding: 20px;
+    border-radius: 8px;
+    width: 200px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.support-service-text-box:hover{
+    background-color: #c3daf3;
+}
+.about-icon{
+    color: #6d85a3;
+}
+
+@media(max-width: 1080px){
+    .support-service-content{
+        padding: 20px 20px;      
+    }
+}

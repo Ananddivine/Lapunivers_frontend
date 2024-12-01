@@ -75,7 +75,7 @@
     box-shadow: 1px 0px 30px 5px #00e1ffc1; 
   }
   .lines::after{
-    bottom: 0;
+    bottom: 1px;
     
   
   }

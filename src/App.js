@@ -21,6 +21,8 @@ import PlaceOrder from './Pages/PlaceOrder';
 import { ShopContextProvider } from './Context/ShopContext';
 import './App.css';
 import Orders from './Pages/Orders';
+import Terms from './Components/Terms/Terms';
+import Support from './Components/Support/Support';
 
 
 function App() {
@@ -57,6 +59,8 @@ function App() {
           <Route path='/cart' element={<Cart />} />
           <Route path='/place-order' element={<PlaceOrder />} />
           <Route path='/orders' element={<Orders />} />
+          <Route path='/terms' element={<Terms />} />
+          <Route path='/Support' element={<Support />} />
           </Routes>
           </ShopContextProvider>
         </BrowserRouter>
