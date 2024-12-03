@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
 import './Css/Contact.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faPhone, faEnvelope, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import checkmark from '../Components/Assets/checkmark.png';
+import bannerImage from '../Components/Assets/callcenter.png';
 
 function Contact() {
   const [popupVisible, setPopupVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [validationError, setValidationError] = useState('');
+  const phoneNumber = "+919141133686";
+  const email = "ad91482948@gmail.com";
+
+  const handleCallClick = () => {
+    window.location.href = `tel:${phoneNumber}`;
+  }
+  const handleEmailClick = () => {
+    // Use window.location.href to trigger the mailto link
+    window.location.href = `mailto:${email}`;
+  };
 
   useEffect(() => {
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwb-qRNlnlVg2RfP9-B6Ukl1kNCeH0BKjitjOLWYyi9aaeWSM6Il4q4uG3b8lIgRGxQ/exec';
@@ -89,102 +100,42 @@ function Contact() {
   return (
     
     <div>
-      <style>
-        {`
-          #loading-spinner {
-            display: block;
-            position: fixed;
-            z-index: 8888;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.678);
-          }
 
-          #loading-spinner:before {
-            content: '';
-            display: block;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 70px;
-            height: 70px;
-            margin: -30px 0 0 -30px;
-            border-radius: 50%;
-            border: 10px solid #ffffff00;
-            border-top-color: #008cf0;
-            border-bottom-color: #0088f0;
-            animation: spin 2s linear infinite;
-          }
-
-          @keyframes spin {
-            to {
-              transform: rotate(360deg);
-            }
-          }
-
-          #loading-spinners {
-            display: block;
-            position: fixed;
-            z-index: 8888;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(253, 253, 253, 0);
-          }
-
-          #loading-spinners:before {
-            content: '';
-            display: block;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 50px;
-            height: 50px;
-            margin: -20px 0 0 -20px;
-            border-radius: 50%;
-            border: 10px solid #ffffff00;
-            border-top-color: #008cf0;
-            border-bottom-color: #0088f0;
-            animation: spins 2s linear infinite;
-          }
-
-          @keyframes spins {
-            to {
-              transform: rotate(-360deg);
-            }
-          }
-
-          #loading-spinner h1 {
-            z-index: 9999;
-            position: relative;
-            left: 49%;
-            top: 49%;
-            font-size: 15px;
-            font-weight: 700;
-            color: #000;
-          }
-        `}
-      </style>
-      <div id="error-message" className={`message ${error ? '' : 'hidden'} error-message`}>
-        <FontAwesomeIcon icon={faTimes} /> Please check the internet to submit the details. Thank you!
+<div className="banner-container">
+        <div className="banner-content">
+          <h1 className="banner-title">Contact Us</h1>
+          <p className="banner-description">We are here to help! Please reach out with any questions or feedback.</p>
+        </div>
+        <div className="banner-image">
+          <img src={bannerImage} alt="Contact Banner" />
+        </div>
       </div>
-      <div id="validation-error" className={`message ${validationError ? '' : 'hidden'} error-message`}>
-        <FontAwesomeIcon icon={faTimes} /> {validationError}
+
+      <div className="contact-container">
+               <div className="form-section">
+                  <div id="error-message" className={`message ${error ? '' : 'hidden'} error-message`}>
+                    <FontAwesomeIcon icon={faTimes} /> Please check the internet to submit the details. Thank you!
+                  </div>
+                  <div id="validation-error" className={`message ${validationError ? '' : 'hidden'} error-message`}>
+                   <FontAwesomeIcon icon={faTimes} /> {validationError}                
+                   </div>
+                  <div id="success-message" className={`message hidden success-message ${popupVisible ? 'open-popup' : ''}`}></div>                  
+                    <form className="contact-form" name="contactform" method="post">
+                      <input type="text" name="name" placeholder="Name" required/>
+                      <input type="number" name="number" placeholder="Mobile Number" required/>
+                      <input type="email" name="email" placeholder="Email Id" required/>
+                      <input type="text" name="message" placeholder="Message" required/>
+                      <button type="submit">Submit</button>
+                    </form>                  
+                  </div>
+                  <div className="details-section">
+          <h2>Contact Details</h2>
+          <p onClick={handleCallClick} ><FontAwesomeIcon icon={faPhone} /> Phone: +91 91411336861</p>
+          <p onClick={handleEmailClick} ><FontAwesomeIcon icon={faEnvelope} /> Email: support@lapUniverse.com</p>
+          <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Address: 123, Main Street, City, Country</p>
+        </div>
       </div>
-      <div id="success-message" className={`message hidden success-message ${popupVisible ? 'open-popup' : ''}`}></div>
-      <h1>Contact Us</h1>
-      <div className="container contact-box">
-        <form className="contact-form" name="contactform" method="post">
-          <input type="text" name="name" placeholder="Name" required/>
-          <input type="number" name="number" placeholder="Mobile Number" required/>
-          <input type="email" name="email" placeholder="Email Id" required/>
-          <input type="text" name="message" placeholder="Message" required/>
-          <button type="submit">Submit</button>
-        </form>
-      </div>
+
       <div className={`popup ${popupVisible ? 'open-popup' : ''}`} id="popup">
         <img src={checkmark} alt="checkmark" />
         <h2>Thank You!</h2>
@@ -198,6 +149,7 @@ function Contact() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
