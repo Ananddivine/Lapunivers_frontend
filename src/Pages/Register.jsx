@@ -105,6 +105,28 @@ const Register = () => {
     }
   };
 
+  // Handle step 3 timeout (2 minutes)
+useEffect(() => {
+  if (step === 3) {
+    const timer = setTimeout(() => {
+      toast.error('Session expired. Please restart the process.');
+      resetToStep1();
+    }, 2 * 60 * 1000); // 2 minutes
+
+    return () => clearTimeout(timer); // Clear timer on cleanup
+  }
+}, [step]);
+
+// Reset to Step 1 and clear localStorage
+const resetToStep1 = () => {
+  setStep(1);
+  setFormData({ email: '', otp: '', username: '', password: '' });
+  localStorage.removeItem('otp-expiry');
+  localStorage.removeItem('encrypted-email');
+  localStorage.removeItem('otp-step');
+};
+
+
   // Create Account
   const signup = async () => {
     setLoading(true);
@@ -138,6 +160,7 @@ const Register = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="register-container">
