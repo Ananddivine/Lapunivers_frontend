@@ -8,7 +8,6 @@ import CryptoJS from 'crypto-js';
 
 const Register = () => {
   const [step, setStep] = useState(() => parseInt(localStorage.getItem('otp-step')) || 1);
-  const [otpTimer, setOtpTimer] = useState(0); // Countdown timer for OTP
   const [formData, setFormData] = useState({
     email: '',
     otp: '',
@@ -18,42 +17,28 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Handle OTP expiration check
   useEffect(() => {
     const otpExpiry = localStorage.getItem('otp-expiry');
     if (otpExpiry && step === 2) {
-      const remainingTime = Math.max(0, otpExpiry - new Date().getTime() + 60 * 1000); // Add 1 minute for waiting
-      setOtpTimer(remainingTime);
-
-      const interval = setInterval(() => {
-        const timeLeft = Math.max(0, otpExpiry - new Date().getTime() + 60 * 1000);
-        setOtpTimer(timeLeft);
-
-        if (timeLeft <= 0) {
-          clearInterval(interval);
-        }
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [step]);
-
-
-  // Load saved email and OTP expiration from localStorage
-  useEffect(() => {
-    const encryptedEmail = localStorage.getItem('encrypted-email');
-    const otpExpiry = localStorage.getItem('otp-expiry');
-    if (encryptedEmail && step === 2) {
-      const decryptedEmail = CryptoJS.AES.decrypt(encryptedEmail, 'secret-key').toString(CryptoJS.enc.Utf8);
-      setFormData((prev) => ({ ...prev, email: decryptedEmail }));
-
-      // Check if OTP has expired
-      if (otpExpiry && new Date().getTime() > otpExpiry) {
+      const remainingTime = otpExpiry - new Date().getTime();
+      // If OTP is expired, reset the flow to step 1
+      if (remainingTime <= 0) {
         toast.error('OTP has expired. Please request a new one.');
         setStep(1);
         localStorage.removeItem('otp-expiry');
         localStorage.removeItem('encrypted-email');
         localStorage.removeItem('otp-step');
       }
+    }
+  }, [step]);
+
+  // Load saved email and OTP expiration from localStorage
+  useEffect(() => {
+    const encryptedEmail = localStorage.getItem('encrypted-email');
+    if (encryptedEmail && step === 2) {
+      const decryptedEmail = CryptoJS.AES.decrypt(encryptedEmail, 'secret-key').toString(CryptoJS.enc.Utf8);
+      setFormData((prev) => ({ ...prev, email: decryptedEmail }));
     }
   }, [step]);
 
@@ -75,9 +60,9 @@ const Register = () => {
       });
       const responseData = await response.json();
       if (responseData.success) {
-        toast.success('OTP will be sent soon to your email!');
+        toast.success('OTP has been sent to your email!');
         const encryptedEmail = CryptoJS.AES.encrypt(formData.email, 'secret-key').toString();
-        const otpExpiry = new Date().getTime() + 10 * 60 * 1000; // 10 minutes
+        const otpExpiry = new Date().getTime() + 2 * 60 * 1000; // OTP valid for 2 minutes
 
         // Save encrypted email and OTP expiration
         localStorage.setItem('encrypted-email', encryptedEmail);
@@ -138,12 +123,10 @@ const Register = () => {
       const responseData = await response.json();
       if (response.ok && responseData.success) {
         const tokenExpiryTime = new Date().getTime() + 24 * 60 * 60 * 1000; // Set token expiry to 24 hours
-  
+
         localStorage.setItem('auth-token', responseData.token);
         localStorage.setItem('token-expiry', tokenExpiryTime);
-        // localStorage.setItem('user-email', formData.email);
         localStorage.setItem('username', responseData.user.name);
-        // localStorage.setItem('userId', responseData.user.id);
         toast.success('Account created successfully! Redirecting...');
         setTimeout(() => navigate('/welcome'), 2000);
       } else {
@@ -185,12 +168,12 @@ const Register = () => {
               placeholder="Enter OTP"
               required
             />
-            <button onClick={verifyOtp} disabled={loading || otpTimer > 0}>
-              {loading ? 'Verifying...' : otpTimer > 0 ? `Wait ${Math.ceil(otpTimer / 1000)}s` : 'Verify OTP'}
+            <button onClick={verifyOtp} disabled={loading}>
+              {loading ? 'Verifying...' : 'Verify OTP'}
             </button>
             <p className="info-text">
-      <bold style={{color: 'white'}}>Please note</bold> : <small  style={{color: '#7aa5d0'}}>It may take up to 10 minutes to send the OTP for security purposes. Feel free to explore our website while you wait.</small>
-    </p>
+              <bold style={{ color: 'white' }}>Please note</bold> : <small style={{ color: '#7aa5d0' }}>The OTP will remain valid for 2 minutes.</small>
+            </p>
           </div>
         )}
         {step === 3 && (
