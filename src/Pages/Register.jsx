@@ -16,6 +16,16 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [isHovered, setIsHovered] = useState(false);
+
+
+
+//wrong email
+ const handleClearLocalStorage  = () => {
+  localStorage.clear();
+  resetToStep1();
+ }
+
 
   // Handle OTP expiration check
   useEffect(() => {
@@ -197,6 +207,10 @@ const resetToStep1 = () => {
             <p className="info-text">
               <bold style={{ color: 'white' }}>Please note</bold> : <small style={{ color: '#7aa5d0' }}>The OTP will remain valid for 2 minutes.</small>
             </p>
+            <p  onClick={handleClearLocalStorage}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)} style={{cursor: 'pointer',  color: isHovered ? 'blue' : '#ccc',
+        textDecoration: isHovered ? 'none' : 'none',}}>Wrong Email ??</p>
           </div>
         )}
         {step === 3 && (
@@ -220,6 +234,10 @@ const resetToStep1 = () => {
             <button onClick={signup} disabled={loading}>
               {loading ? 'Processing...' : 'Create Account'}
             </button>
+            <p  onClick={handleClearLocalStorage}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)} style={{cursor: 'pointer',  color: isHovered ? 'blue' : '#ccc',
+        textDecoration: isHovered ? 'none' : 'none',}}>Wrong Email ??</p>
           </div>
         )}
         <p className="loginsignup-login">
