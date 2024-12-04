@@ -55,7 +55,7 @@ const Welcome = () => {
     if (!tokenExpiryTime || currentTime > tokenExpiryTime) {
       localStorage.clear();
       toast.error('Session expired. Please log in again.');
-      window.location.href = '/login';
+      // window.location.href = '/login';
     }
   }, []);
 
