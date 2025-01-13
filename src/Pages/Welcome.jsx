@@ -16,6 +16,12 @@ const Welcome = () => {
   const [openReplyBox, setOpenReplyBox] = useState(null); // Track open reply box
   const [error, setError] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [success, setSuccess] = useState(null);
+
+  if (success) {
+    toast.success(success)
+    setSuccess(null)
+  }
 
   const toggleForm = () => {
     setIsFormOpen(!isFormOpen);
@@ -100,6 +106,7 @@ const Welcome = () => {
       setAttachments([]);
       const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues', config);
       setIssues(response.data);
+      toast.success('issue successfully posted')
     } catch (err) {
       toast.error('Error posting your issue');
       console.error(err);
@@ -130,6 +137,7 @@ const Welcome = () => {
       setIssues((prevIssues) =>
         prevIssues.map((issue) => (issue._id === issueId ? response.data : issue))
       );
+      toast.success('You have successfully submited the reply')
     } catch (err) {
       toast.error('Error sending reply');
       console.error(err);
@@ -234,9 +242,7 @@ const Welcome = () => {
                     {issue.attachments.map((attachment, index) => (
                       <li key={index} className="flex items-center gap-2">
                         {renderAttachment(attachment)}
-                        <a className='file-attachments' href={attachment} target="_blank" rel="noopener noreferrer">
-                          {attachment.split('/').pop()}
-                        </a>
+                        <a className='file-attachments' href={attachment} target="_blank" rel="noopener noreferrer">  Click here to View</a>
                       </li>
                     ))}
                   </div>

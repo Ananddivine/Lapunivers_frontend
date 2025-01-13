@@ -61,7 +61,7 @@ const Register = () => {
   const sendOtp = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/users/send-otp', {
+      const response = await fetch('http://localhost:5000/api/users/send-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ const Register = () => {
   const verifyOtp = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/users/verify-otp', {
+      const response = await fetch('http://localhost:5000/api/users/verify-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const resetToStep1 = () => {
   const signup = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/users/signup', {
+      const response = await fetch('http://localhost:5000/api/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,7 +156,7 @@ const resetToStep1 = () => {
       if (response.ok && responseData.success) {
         const tokenExpiryTime = new Date().getTime() + 24 * 60 * 60 * 1000; // Set token expiry to 24 hours
 
-        localStorage.setItem('auth-token', responseData.token);
+        localStorage.setItem('auth-token', responseData.authToken);
         localStorage.setItem('token-expiry', tokenExpiryTime);
         localStorage.setItem('username', responseData.user.name);
         toast.success('Account created successfully! Redirecting...');

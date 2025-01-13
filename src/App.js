@@ -23,6 +23,7 @@ import './App.css';
 import Orders from './Pages/Orders';
 import Terms from './Components/Terms/Terms';
 import Support from './Components/Support/Support';
+import Advance from './Components/Factory/Advance';
 
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
           <Route path='/orders' element={<Orders />} />
           <Route path='/terms' element={<Terms />} />
           <Route path='/Support' element={<Support />} />
+          <Route path='/Factory' element={<Advance/>} />
           </Routes>
           </ShopContextProvider>
         </BrowserRouter>

@@ -37,8 +37,8 @@
     left: calc(0% - 1px);
     width: 3px;
     top: -10px;
-    bottom: -10px;
-    background: linear-gradient(to bottom,Green,rgb(255, 69, 193),#00fffb);
+    bottom: 0px;
+    background: linear-gradient(to bottom,Green,rgb(255, 69, 193),#00fffb,#fff);
     display: block;
     transition: 0.1s; 
     
@@ -50,8 +50,7 @@
     content: '';
     height: 1rem;
     width: 1rem;
-    box-sizing: border-box;
- 
+    box-sizing: border-box; 
     border-radius: 50%;
     background-color: #0e1015;
     border: 2px solid #ffff;
@@ -74,11 +73,11 @@
     transform: translateX(-50%);
     box-shadow: 1px 0px 30px 5px #00e1ffc1; 
   }
-  .lines::after{
-    bottom: 1px;
+  /* .lines::after{
+    bottom: 0px;
     
   
-  }
+  } */
   .sections{
     display: flex;
     opacity: 0;

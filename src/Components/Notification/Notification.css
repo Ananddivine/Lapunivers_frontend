@@ -116,3 +116,12 @@
     margin: 3px 8px;
     padding: 3px 6px;
   }
+  #notify-button{
+  border: 1px solid aqua;
+   background: #fff;
+   cursor: pointer;
+  }
+  #notify-button:hover{
+  background: #0066ff;
+  color: #fff;
+  }

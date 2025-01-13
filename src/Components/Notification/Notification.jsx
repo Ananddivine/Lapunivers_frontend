@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt, faFilePdf, faFileArchive, faTrash } from '@fortawesome/free-solid-svg-icons';
+import '../Notification/Notification.css'
 
 const Notification = () => {
   const [userIssues, setUserIssues] = useState([]);
@@ -105,7 +106,7 @@ const Notification = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {attachment.split('/').pop()}
+                 click to view
                 </a>
               </li>
             ))}
@@ -115,7 +116,8 @@ const Notification = () => {
 
       {/* Delete Button */}
       <button
-        className="mt-2 bg-red-600 text-white px-4 py-2 rounded"
+        className="mt-2 bg-red-600 text-black px-4 py-2 rounded"
+        id='notify-button'
         onClick={() => deleteIssue(issue._id)}
       >
         <FontAwesomeIcon icon={faTrash} className="mr-2" />
