@@ -61,7 +61,7 @@ const Register = () => {
   const sendOtp = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/users/send-otp', {
+      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/users/send-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ const Register = () => {
   const verifyOtp = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/users/verify-otp', {
+      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/users/verify-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const resetToStep1 = () => {
   const signup = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/users/signup', {
+      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

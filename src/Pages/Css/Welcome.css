@@ -117,3 +117,53 @@
 }
 
   
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.search-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 10px 10px 30px; /* Add padding on the left side to make space for the icon */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.search-icon {
+  position: absolute;
+  top: 40%;
+  left: 10px;  /* Adjust position */
+  transform: translateY(-50%); /* Center the icon vertically */
+  color: #888; /* Set icon color */
+}

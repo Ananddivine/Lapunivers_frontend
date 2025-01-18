@@ -4,11 +4,12 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faReply, faFileAlt, faFilePdf, faFileArchive } from '@fortawesome/free-solid-svg-icons';
+import { faReply, faSearch  } from '@fortawesome/free-solid-svg-icons';
 import './Css/Welcome.css';
 
 const Welcome = () => {
   const [issues, setIssues] = useState([]);
+  const [filteredIssues, setFilteredIssues] = useState([]); // Track filtered issues based on search query
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [attachments, setAttachments] = useState([]);
@@ -17,10 +18,14 @@ const Welcome = () => {
   const [error, setError] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(''); // Search query state
+
+  const navigate = useNavigate();
 
   if (success) {
-    toast.success(success)
-    setSuccess(null)
+    toast.success(success);
+    setSuccess(null);
   }
 
   const toggleForm = () => {
@@ -31,11 +36,8 @@ const Welcome = () => {
     toast.error(error);
     setError(null); // Clear the error after showing
   }
-  
- // Manage form visibility
-  const navigate = useNavigate();
+
   useEffect(() => {
-    
     const fetchIssues = async () => {
       try {
         const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/issues');
@@ -44,6 +46,7 @@ const Welcome = () => {
         }
         const data = await response.json();
         setIssues(data);
+        setFilteredIssues(data); // Set initial filtered issues to all issues
       } catch (error) {
         console.error('Error fetching issues:', error);
         setError(error.message);
@@ -61,28 +64,26 @@ const Welcome = () => {
     if (!tokenExpiryTime || currentTime > tokenExpiryTime) {
       localStorage.clear();
       toast.error('Session expired. Please log in again.');
-      // window.location.href = '/login';
     }
   }, []);
 
-    // Check if the user is logged in
-    const checkLoginStatus = () => {
-      const token = localStorage.getItem('auth-token');
-      const username = localStorage.getItem('username');
-  
-      if (!token || !username) {
-        toast.error('Please log in first.');
-        navigate('/login');
-        return false;
-      }
-      return true;
-    };
+  const checkLoginStatus = () => {
+    const token = localStorage.getItem('auth-token');
+    const username = localStorage.getItem('username');
+
+    if (!token || !username) {
+      toast.error('Please log in first.');
+      navigate('/login');
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Check if the user is logged in before submitting
     if (!checkLoginStatus()) return;
 
+    setLoading(true); // Start loading
     try {
       const token = localStorage.getItem('auth-token');
       const config = {
@@ -106,15 +107,17 @@ const Welcome = () => {
       setAttachments([]);
       const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues', config);
       setIssues(response.data);
-      toast.success('issue successfully posted')
+      setFilteredIssues(response.data); // Reset filtered issues after posting
+      toast.success('Issue successfully posted');
     } catch (err) {
-      toast.error('Error posting your issue');
+      toast.error('Error posting your issue!');
       console.error(err);
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
   const handleReply = async (issueId) => {
-    // Check if the user is logged in before replying
     if (!checkLoginStatus()) return;
 
     try {
@@ -137,7 +140,7 @@ const Welcome = () => {
       setIssues((prevIssues) =>
         prevIssues.map((issue) => (issue._id === issueId ? response.data : issue))
       );
-      toast.success('You have successfully submited the reply')
+      toast.success('You have successfully submitted the reply');
     } catch (err) {
       toast.error('Error sending reply');
       console.error(err);
@@ -147,39 +150,56 @@ const Welcome = () => {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     setAttachments(files);
-  }
+  };
 
   const toggleReplyBox = (issueId) => {
     setOpenReplyBox(openReplyBox === issueId ? null : issueId);
   };
 
-  const renderAttachment = (attachment) => {
-    const extension = attachment.split('.').pop().toLowerCase();
-    const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(extension);
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
   
-    if (isImage) {
-      return (
-        <img 
-          src={attachment} 
-          alt="Attachment" 
-          className="attachment-image" // Apply the CSS class here
-        />
-      );
-    } else if (extension === 'pdf') {
-      return <FontAwesomeIcon icon={faFilePdf} className="text-red-600 w-6 h-6" />;
-    } else if (['doc', 'docx', 'txt'].includes(extension)) {
-      return <FontAwesomeIcon icon={faFileAlt} className="text-blue-600 w-6 h-6" />;
-    } else if (['zip', 'rar'].includes(extension)) {
-      return <FontAwesomeIcon icon={faFileArchive} className="text-green-600 w-6 h-6" />;
-    } else {
-      return <FontAwesomeIcon icon={faFileAlt} className="text-gray-100 w-6 h-6" />;
-    }
+    // Filter issues based on title and description
+    const filtered = issues.filter((issue) => {
+      // Check if the issue title or description matches
+      const issueMatch =
+        issue.title.toLowerCase().includes(query) || issue.description.toLowerCase().includes(query);
+  
+      // Check if any of the replies match the query
+      const replyMatch = issue.replies && issue.replies.some((reply) => reply.message.toLowerCase().includes(query));
+  
+      // Return true if either the issue or any reply matches
+      return issueMatch || replyMatch;
+    });
+  
+    setFilteredIssues(filtered);
   };
   
+
   return (
     <div className="welcome container mx-auto p-4">
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       <h1 className="text-3xl font-bold text-gray-50">Welcome!</h1>
       <p className="mt-4">You can start posting your issues below or reply to existing threads.</p>
+
+      {/* Search Bar */}
+      <div className="search-container">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearch}
+          placeholder="     Search issues..."
+          className="search-input"
+        />
+        <FontAwesomeIcon icon={faSearch} className="search-icon" />
+      </div>
+
+
 
       {/* Toggle form button */}
       <button onClick={toggleForm} className="btn btn-secondary">
@@ -203,24 +223,21 @@ const Welcome = () => {
             className="block w-full p-2 border border-gray-300 rounded mb-4"
             required
           ></textarea>
-          
+
           <input
             type="file"
             multiple
             onChange={handleFileChange}
             className="block w-full p-2 border border-gray-300 rounded mb-4"
           />
-          
+
           <div className="mb-4">
             {attachments.length > 0 && (
               <p className="text-gray-600">Selected files: {attachments.map((file) => file.name).join(', ')}</p>
             )}
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary"
-          >
+          <button type="submit" className="btn btn-primary">
             Post Issue
           </button>
         </form>
@@ -228,8 +245,8 @@ const Welcome = () => {
 
       <h2 className="mt-8 text-2xl font-semibold">Existing Issues</h2>
       <div className="mt-4">
-        {issues.length > 0 ? (
-          issues.map((issue) => (
+        {filteredIssues.length > 0 ? (
+          filteredIssues.map((issue) => (
             <div key={issue._id} className="border text-white border-gray-300 p-4 mb-4 rounded">
               <h3 className="text-gray-300 font-bold">{issue.title}</h3>
               <p>{issue.description}</p>
@@ -240,10 +257,9 @@ const Welcome = () => {
                   <h4 className="font-semibold text-white">Attachments:</h4>
                   <div className="attachments-container">
                     {issue.attachments.map((attachment, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        {renderAttachment(attachment)}
-                        <a className='file-attachments' href={attachment} target="_blank" rel="noopener noreferrer">  Click here to View</a>
-                      </li>
+                      <a className="file-attachments" href={attachment} target="_blank" rel="noopener noreferrer">
+                        Click here to View
+                      </a>
                     ))}
                   </div>
                 </div>
@@ -263,10 +279,7 @@ const Welcome = () => {
                 )}
               </div>
 
-              <button
-                onClick={() => toggleReplyBox(issue._id)}
-                class="btn btn-primary"
-              >
+              <button onClick={() => toggleReplyBox(issue._id)} className="btn btn-primary">
                 <FontAwesomeIcon icon={faReply} /> Reply
               </button>
 
@@ -278,10 +291,7 @@ const Welcome = () => {
                     onChange={(e) => setReplyMessage(e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded"
                   ></textarea>
-                  <button
-                    onClick={() => handleReply(issue._id)}
-                  class="btn btn-primary"
-                  >
+                  <button onClick={() => handleReply(issue._id)} className="btn btn-primary">
                     Submit Reply
                   </button>
                 </div>
