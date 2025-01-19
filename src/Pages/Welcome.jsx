@@ -57,6 +57,8 @@ const Welcome = () => {
     fetchIssues();
   }, [navigate]);
 
+
+
   useEffect(() => {
     const tokenExpiryTime = localStorage.getItem('token-expiry');
     const currentTime = new Date().getTime();
@@ -109,6 +111,7 @@ const Welcome = () => {
       setIssues(response.data);
       setFilteredIssues(response.data); // Reset filtered issues after posting
       toast.success('Issue successfully posted');
+  
     } catch (err) {
       toast.error('Error posting your issue!');
       console.error(err);
@@ -119,7 +122,7 @@ const Welcome = () => {
 
   const handleReply = async (issueId) => {
     if (!checkLoginStatus()) return;
-
+  
     try {
       const token = localStorage.getItem('auth-token');
       const config = {
@@ -128,24 +131,29 @@ const Welcome = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-
-      const response = await axios.post(
+  
+      // Submit the reply to the server
+      await axios.post(
         `https://lapuniversbackend-production.up.railway.app/api/issues/${issueId}/reply`,
         { message: replyMessage },
         config
       );
-
-      setReplyMessage('');
-      setOpenReplyBox(null); // Close the reply box after submitting
-      setIssues((prevIssues) =>
-        prevIssues.map((issue) => (issue._id === issueId ? response.data : issue))
-      );
+  
+      setReplyMessage(''); // Clear the reply input field
+      setOpenReplyBox(null); // Close the reply box
+  
+      // Fetch updated issues from the server
+      const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues', config);
+      setIssues(response.data); // Update the issues state
+      setFilteredIssues(response.data); // Update the filtered issues state
+  
       toast.success('You have successfully submitted the reply');
     } catch (err) {
       toast.error('Error sending reply');
       console.error(err);
     }
   };
+  
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
