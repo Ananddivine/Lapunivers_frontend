@@ -20,7 +20,7 @@ const Hero = () => {
 
     useEffect(() => {
       // Fetch all products
-      fetch('https://lapuniversbackend-production.up.railway.app/allproducts')
+      fetch('http://localhost:5000/api/products')
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

@@ -195,3 +195,41 @@
        padding-left: 1px;
     }
   }
+  .orders{
+    margin-left: 30px;
+    margin-top: 8px;
+    
+  }
+
+  .truck-icon{
+ margin-top: 10px;
+ color: #04f800;
+  }
+
+  /* Tooltip styling */
+.orders {
+  position: relative;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  position: absolute;
+
+  left: 10%;
+   top: 66%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #1aff00;
+  text-align: center;
+  padding: 10px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+}
+
+.orders:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

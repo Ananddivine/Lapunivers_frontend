@@ -16,8 +16,7 @@ function SearchResults({ searchResults, searchParams }) {
               
               <p>{result.description}</p>
               <Link to={`/product/${result.id}`}>
-              <img src={result.image} alt={result.name} />
-              
+              <img src={result.images[0]} alt={result.name} />              
               </Link>
               
             </div>

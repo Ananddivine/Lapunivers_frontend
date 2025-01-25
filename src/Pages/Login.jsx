@@ -3,11 +3,18 @@ import './Css/Login.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Css/ToastStyles.css';
+import axios from 'axios';
+
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [passwordError, setPasswordError] = useState(false); // Track if password is wrong
+
+  const axiosInstance = axios.create({
+    baseURL: process.env.REACT_APP_API_BASE_URL, // Base URL from .env
+  });
+
 
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,32 +35,24 @@ const Login = () => {
       setLoading(false);
       return;
     }
-    try {
-      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const responseData = await response.json();
-    
-      if (response.ok && responseData.success) {
-        const tokenExpiryTime = new Date().getTime() + 24 * 60 * 60 * 1000; // Set token expiry to 24 hours
   
-        localStorage.setItem('auth-token', responseData.token);
+    try {
+      // Use axiosInstance.post to send the request
+      const response = await axiosInstance.post('/api/users/login', formData);
+  
+      // Check the response and handle it
+      if (response.data.success) {
+        const tokenExpiryTime = new Date().getTime() + 24 * 60 * 60 * 1000; // Set token expiry to 24 hours
+        
+        localStorage.setItem('auth-token', response.data.token);
         localStorage.setItem('token-expiry', tokenExpiryTime);
-        // localStorage.setItem('user-email', formData.email);
-        localStorage.setItem('username', responseData.user.name);
-        // localStorage.setItem('userId', responseData.user.id);
+        localStorage.setItem('username', response.data.user.name);
   
         toast.success('Login successful! Redirecting...');
         setTimeout(() => window.location.replace("/welcome"), 2000);
       } else {
-        toast.error(responseData.message || 'Login failed. Please try again later!');
-        if (responseData.message === "Invalid password") {
+        toast.error(response.data.message || 'Login failed. Please try again later!');
+        if (response.data.message === "Invalid password") {
           setPasswordError(true);
         }
         setFormData({ ...formData, password: '' });
@@ -64,6 +63,7 @@ const Login = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="login-container">

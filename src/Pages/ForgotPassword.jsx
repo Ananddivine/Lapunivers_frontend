@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../Components/axiosInstance/axiosInstance'; // Import axiosInstance
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,7 +20,7 @@ const ForgotPassword = () => {
       return;
     }
     try {
-      await axios.post('https://lapuniversbackend-production.up.railway.app/api/forgot-password/request-otp', { email });
+      await axiosInstance.post('/api/forgot-password/request-otp', { email });
       setStep('verify');
       toast.success('OTP sent to your email.');
     } catch (err) {
@@ -35,7 +35,7 @@ const ForgotPassword = () => {
       return;
     }
     try {
-      await axios.post('https://lapuniversbackend-production.up.railway.app/api/forgot-password/verify-otp', { email, otp });
+      await axiosInstance.post('/api/forgot-password/verify-otp', { email, otp });
       setStep('reset');
       toast.success('OTP verified. Please enter a new password.');
     } catch (err) {
@@ -49,7 +49,7 @@ const ForgotPassword = () => {
       return;
     }
     try {
-      await axios.post('https://lapuniversbackend-production.up.railway.app/api/forgot-password/reset-password', { email, newPassword });
+      await axiosInstance.post('/api/forgot-password/reset-password', { email, newPassword });
       toast.success('Password reset successfully.');
   
       // Redirect to login page after a short delay

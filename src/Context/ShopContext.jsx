@@ -1,9 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axiosInstance from "../Components/axiosInstance/axiosInstance"; // Importing axiosInstance
 
 export const ShopContext = createContext();
-
 
 const getDefaultCart = () => {
   let cart = {};
@@ -12,101 +11,83 @@ const getDefaultCart = () => {
   }
   return cart;
 };
- 
-export const ShopContextProvider = (props) => {
 
+export const ShopContextProvider = (props) => {
   const [all_product, setAll_Product] = useState([]);
   const [cartItems, setCartItems] = useState(getDefaultCart());
-  const [cartTotal, setCartTotal] =  useState(getDefaultCart());
+  const [cartTotal, setCartTotal] = useState(getDefaultCart());
   const navigate = useNavigate();
-  const baseURL = 'https://lapuniversbackend-production.up.railway.app/api'; 
+  const baseURL = process.env.REACT_APP_API_BASE_URL; // Using the base URL from the environment variable
 
   useEffect(() => {
-    // Fetch all products
-    fetch(`${baseURL}/products`) // Adjust to your products route
+    // Fetch all products using axiosInstance
+    axiosInstance.get(`${baseURL}/api/products`)  
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Fetched products:', data);
-        setAll_Product(data);
+        console.log('Fetched products:', response.data);
+        setAll_Product(response.data);
       })
       .catch((error) => console.error('Error fetching products:', error));
 
     // Fetch cart items if the user is authenticated
     if (localStorage.getItem('auth-token')) {
-      fetch(`${baseURL}/users/getcart`, 
-        {
-        method: 'POST',
+      axiosInstance.post(`${baseURL}/api/users/getcart`, {}, {
         headers: {
-          Accept: 'application/json',
           'auth-token': `${localStorage.getItem('auth-token')}`,
-          'Content-Type': 'application/json',
         },
       })
-        .then((response) => response.json())
-        .then((data) => {
-          // console.log('Fetched cart items:', data);
-          setCartItems(data); // Update the cartItems state with fetched data
-          setCartTotal(data)
+        .then((response) => {
+          setCartItems(response.data);
+          setCartTotal(response.data);
         })
         .catch((error) => console.error('Error fetching cart items:', error));
     }
-  }, []);
+  }, [baseURL]);
 
   const addToCart = async (itemId) => {
     const token = localStorage.getItem('auth-token'); // Retrieve JWT
-    if (!token) {     
-        navigate('/Login'); // Redirect to the login page
-        return; // Exit the function
-    } 
-  
-    try {
-        const response = await fetch(`${baseURL}/users/addtocart`, {
-            method: 'POST',
-            headers: {
-                'auth-token': token, // Send the JWT here
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ item: itemId }),
-        });
-
-        const data = await response.json();
-        console.log('Item added to cart:', data);
-
-        if (data.success) {
-            // Update the cart items state locally
-            setCartItems((prev) => ({
-                ...prev,
-                [itemId]: prev[itemId] + 1, // Increment the quantity
-            }));
-        }
-    } catch (error) {
-        console.error('Error adding item to cart:', error);
+    if (!token) {
+      navigate('/Login'); // Redirect to the login page
+      return; // Exit the function
     }
-};
 
-  
-  
-  
+    try {
+      const response = await axiosInstance.post(`${baseURL}/api/users/addtocart`, 
+        { item: itemId },
+        {
+          headers: {
+            'auth-token': token, // Send the JWT here
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      console.log('Item added to cart:', response.data);
+
+      if (response.data.success) {
+        // Update the cart items state locally
+        setCartItems((prev) => ({
+          ...prev,
+          [itemId]: prev[itemId] + 1, // Increment the quantity
+        }));
+      }
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+    }
+  };
 
   const removeFromCart = (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
     if (localStorage.getItem('auth-token')) {
-      fetch(`${baseURL}/users/removecartitem`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'auth-token': localStorage.getItem('auth-token'),
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ item: itemId }),
-      })
-        .then((response) => response.json())
-        .then((data) => console.log('Item removed from cart:', data))
+      axiosInstance.post(`${baseURL}/api/users/removecartitem`, 
+        { item: itemId },
+        {
+          headers: {
+            'auth-token': localStorage.getItem('auth-token'),
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+        .then((response) => console.log('Item removed from cart:', response.data))
         .catch((error) => console.error('Error removing item from cart:', error));
     }
   };
@@ -129,7 +110,6 @@ export const ShopContextProvider = (props) => {
       }
     }
 
-
     for (const item in cartTotal) {
       if (cartTotal[item] > 0) {
         let itemInfo = all_product.find((product) => product.id === Number(item));
@@ -143,9 +123,6 @@ export const ShopContextProvider = (props) => {
 
     return totalAmount;
   };
-
-
-
 
   const getTotalCartItems = () => {
     let totalItem = 0;
@@ -166,7 +143,6 @@ export const ShopContextProvider = (props) => {
     addToCart,
     removeFromCart,
     navigate
-
   };
 
   return (
@@ -175,4 +151,3 @@ export const ShopContextProvider = (props) => {
     </ShopContext.Provider>
   );
 };
-

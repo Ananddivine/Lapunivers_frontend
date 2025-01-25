@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Title from '../Components/Title/Title';
 import './Css/Orders.css';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../Components/axiosInstance/axiosInstance';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,27 +14,34 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/orders/myorders', {
-        method: 'POST',
+      const response = await axiosInstance.post('/api/orders/myorders', {}, {
         headers: {
-          'Content-Type': 'application/json',
           'auth-token': localStorage.getItem('auth-token'),
         },
       });
 
-      const text = await response.text();
-      console.log("Response Text:", text);
-      const data = JSON.parse(text);
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch orders');
-      }
-
-      setOrders(data.orders);
+      setOrders(response.data.orders);
     } catch (error) {
-      setError(error.message);
+      toast.error(error.response ? error.response.data.message : error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const cancelOrder = async (orderId) => {
+    try {
+      const response = await axiosInstance.post('/api/orders/cancelorder', { orderId }, {
+        headers: {
+          'auth-token': localStorage.getItem('auth-token'),
+        },
+      });
+
+      toast.success(response.data.message);
+      // Refresh the orders list after cancellation
+      fetchOrders();
+    } catch (error) {
+      setError(error.response ? error.response.data.message : error.message);
+      toast.error(error.response ? error.response.data.message : error.message);
     }
   };
 
@@ -39,11 +50,9 @@ const Orders = () => {
     const username = localStorage.getItem('username');
 
     if (!token || !username) {
-      // Token or username missing, clear localStorage and redirect to login
       localStorage.clear();
-      navigate('/login'); // Redirect to login page
+      navigate('/login');
     } else {
-      // Fetch orders if token and username are available
       fetchOrders();
     }
   }, [navigate]);
@@ -65,24 +74,23 @@ const Orders = () => {
         {orders.map((order) => (
           <div key={order._id} className='py-4 text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
             <div className='flex items-start gap-6 text-sm md:gap-8 md:ml-4'>
-              {/* Check for product images */}
-                              {order.products[0]?.productId?.images && order.products[0].productId.images.length > 0 ? (
-                  <img 
-                    src={order.products[0].productId.images[0]} 
-                    alt={order.products[0].productId.name} 
-                    className='w-20 h-20 md:w-24 md:h-24 object-cover rounded-md' 
-                  />
-                ) : (
-                  <img 
-                    src='https://via.placeholder.com/150' 
-                    alt='Placeholder' 
-                    className='w-20 h-20 md:w-24 md:h-24 object-cover rounded-md' 
-                  />
-                      )}
+              {order.products[0]?.productId?.images && order.products[0].productId.images.length > 0 ? (
+                <img 
+                  src={order.products[0].productId.images[0]} 
+                  alt={order.products[0].productId.name} 
+                  className='w-20 h-20 md:w-24 md:h-24 object-cover rounded-md' 
+                />
+              ) : (
+                <img 
+                  src='https://via.placeholder.com/150' 
+                  alt='Placeholder' 
+                  className='w-20 h-20 md:w-24 md:h-24 object-cover rounded-md' 
+                />
+              )}
               <div>
                 <p className='sm:text-base font-medium'>{order.products[0]?.productId?.name || 'Product Name'}</p>
                 <div className='flex items-center text-gray-700'>
-                <p className='text-lg'>
+                  <p className='text-lg'>
                     ${order.products[0]?.productId?.new_price * order.products[0]?.quantity || 0}
                   </p>
                   <p>Quantity: {order.products[0]?.quantity || 0}</p>
@@ -95,12 +103,22 @@ const Orders = () => {
                 <p className='text-sm md:text-base'>Status: {order.status || 'Status not available'}</p>
               </div>
               <button className='border px-4 py-2 text-sm font-medium rounded-sm'>Track Order</button>
+              {/* Add the cancel order button */}
+              {order.status !== 'Canceled' && order.status !== 'Completed' && (
+                <button 
+                  onClick={() => cancelOrder(order._id)} 
+                  className='border px-4 py-2 text-sm font-medium rounded-sm text-red-500 mt-2'>
+                  Cancel Order
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
+      <ToastContainer />
     </div>
   );
 };
+
 
 export default Orders;

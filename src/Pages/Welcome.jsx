@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faReply, faSearch  } from '@fortawesome/free-solid-svg-icons';
+import { faReply } from '@fortawesome/free-solid-svg-icons';
+import axiosInstance from '../Components/axiosInstance/axiosInstance';
 import './Css/Welcome.css';
 
 const Welcome = () => {
   const [issues, setIssues] = useState([]);
-  const [filteredIssues, setFilteredIssues] = useState([]); // Track filtered issues based on search query
+  const [filteredIssues, setFilteredIssues] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [attachments, setAttachments] = useState([]);
-  const [replyMessage, setReplyMessage] = useState('');
-  const [openReplyBox, setOpenReplyBox] = useState(null); // Track open reply box
+  const [replyMessages, setReplyMessages] = useState({}); // Track reply messages for each issue
+  const [openReplyBox, setOpenReplyBox] = useState(null);
   const [error, setError] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(''); // Search query state
+  const [searchQuery, setSearchQuery] = useState('');
 
   const navigate = useNavigate();
 
@@ -34,30 +34,23 @@ const Welcome = () => {
 
   if (error) {
     toast.error(error);
-    setError(null); // Clear the error after showing
+    setError(null);
   }
 
   useEffect(() => {
     const fetchIssues = async () => {
       try {
-        const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/issues');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setIssues(data);
-        setFilteredIssues(data); // Set initial filtered issues to all issues
+        const response = await axiosInstance.get('/api/issues');
+        setIssues(response.data);
+        setFilteredIssues(response.data);
       } catch (error) {
-        console.error('Error fetching issues:', error);
-        setError(error.message);
-        toast.error(error.message);
+        console.error('Error fetching issues:', error.response?.data || error.message);
+        setError(error.response?.data?.message || 'Error fetching issues');
       }
     };
 
     fetchIssues();
   }, [navigate]);
-
-
 
   useEffect(() => {
     const tokenExpiryTime = localStorage.getItem('token-expiry');
@@ -85,7 +78,7 @@ const Welcome = () => {
     e.preventDefault();
     if (!checkLoginStatus()) return;
 
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       const token = localStorage.getItem('auth-token');
       const config = {
@@ -102,27 +95,26 @@ const Welcome = () => {
         formData.append('attachments', file);
       });
 
-      await axios.post('https://lapuniversbackend-production.up.railway.app/api/issues', formData, config);
+      await axiosInstance.post('/api/issues', formData, config);
 
       setTitle('');
       setDescription('');
       setAttachments([]);
-      const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues', config);
+      const response = await axiosInstance.get('/api/issues', config);
       setIssues(response.data);
-      setFilteredIssues(response.data); // Reset filtered issues after posting
+      setFilteredIssues(response.data);
       toast.success('Issue successfully posted');
-  
     } catch (err) {
       toast.error('Error posting your issue!');
       console.error(err);
     } finally {
-      setLoading(false); // End loading
+      setLoading(false);
     }
   };
 
   const handleReply = async (issueId) => {
     if (!checkLoginStatus()) return;
-  
+
     try {
       const token = localStorage.getItem('auth-token');
       const config = {
@@ -131,29 +123,26 @@ const Welcome = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-  
-      // Submit the reply to the server
-      await axios.post(
-        `https://lapuniversbackend-production.up.railway.app/api/issues/${issueId}/reply`,
-        { message: replyMessage },
+
+      await axiosInstance.post(
+        `/api/issues/${issueId}/reply`,
+        { message: replyMessages[issueId] }, // Use the reply message for the specific issue
         config
       );
-  
-      setReplyMessage(''); // Clear the reply input field
-      setOpenReplyBox(null); // Close the reply box
-  
-      // Fetch updated issues from the server
-      const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues', config);
-      setIssues(response.data); // Update the issues state
-      setFilteredIssues(response.data); // Update the filtered issues state
-  
+
+      setReplyMessages((prevState) => ({ ...prevState, [issueId]: '' })); // Clear the reply input for this issue
+      setOpenReplyBox(null);
+
+      const response = await axiosInstance.get('/api/issues', config);
+      setIssues(response.data);
+      setFilteredIssues(response.data);
+
       toast.success('You have successfully submitted the reply');
     } catch (err) {
       toast.error('Error sending reply');
       console.error(err);
     }
   };
-  
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -167,23 +156,25 @@ const Welcome = () => {
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-  
-    // Filter issues based on title and description
+
     const filtered = issues.filter((issue) => {
-      // Check if the issue title or description matches
       const issueMatch =
         issue.title.toLowerCase().includes(query) || issue.description.toLowerCase().includes(query);
-  
-      // Check if any of the replies match the query
+
       const replyMatch = issue.replies && issue.replies.some((reply) => reply.message.toLowerCase().includes(query));
-  
-      // Return true if either the issue or any reply matches
+
       return issueMatch || replyMatch;
     });
-  
+
     setFilteredIssues(filtered);
   };
-  
+
+  const handleReplyMessageChange = (e, issueId) => {
+    setReplyMessages((prevState) => ({
+      ...prevState,
+      [issueId]: e.target.value,
+    }));
+  };
 
   return (
     <div className="welcome container mx-auto p-4">
@@ -197,17 +188,16 @@ const Welcome = () => {
 
       {/* Search Bar */}
       <div className="search-container">
+     
         <input
           type="text"
           value={searchQuery}
           onChange={handleSearch}
-          placeholder="     Search issues..."
+          placeholder=" &#128269;  Search issues..."
           className="search-input"
         />
-        <FontAwesomeIcon icon={faSearch} className="search-icon" />
+        
       </div>
-
-
 
       {/* Toggle form button */}
       <button onClick={toggleForm} className="btn btn-secondary">
@@ -265,7 +255,13 @@ const Welcome = () => {
                   <h4 className="font-semibold text-white">Attachments:</h4>
                   <div className="attachments-container">
                     {issue.attachments.map((attachment, index) => (
-                      <a className="file-attachments" href={attachment} target="_blank" rel="noopener noreferrer">
+                      <a
+                        className="file-attachments"
+                        href={attachment}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        key={index}
+                      >
                         Click here to View
                       </a>
                     ))}
@@ -277,7 +273,7 @@ const Welcome = () => {
                 <h4 className="font-semibold">Replies:</h4>
                 {issue.replies && issue.replies.length > 0 ? (
                   issue.replies.map((reply, index) => (
-                    <div key={index} className="p-2 border border-gray-500 rounded mt-2">
+                    <div key={reply._id || index} className="p-2 border border-gray-500 rounded mt-2">
                       <p>{reply.message}</p>
                       <p className="text-sm text-gray-600">Replied by: {reply.username}</p>
                     </div>
@@ -295,8 +291,8 @@ const Welcome = () => {
                 <div className="mt-2">
                   <textarea
                     placeholder="Write your reply..."
-                    value={replyMessage}
-                    onChange={(e) => setReplyMessage(e.target.value)}
+                    value={replyMessages[issue._id] || ''}
+                    onChange={(e) => handleReplyMessageChange(e, issue._id)} // Change reply for specific issue
                     className="w-full p-2 border border-gray-300 rounded"
                   ></textarea>
                   <button onClick={() => handleReply(issue._id)} className="btn btn-primary">

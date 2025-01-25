@@ -44,7 +44,7 @@ const SearchiItemDisplay = () => {
                 <input
                     className="form-control mr-sm-2 search"
                     type="search"
-                    placeholder="Search the laptop models & Products"
+                    placeholder=" &#128269; Search the laptop models & Products"
                     aria-label="Search"
                     value={searchTerm}
                     onChange={handleSearchChange}

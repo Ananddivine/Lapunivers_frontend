@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { NavLink, useNavigate, useLocation, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faCartArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faCartArrowDown, faTruckFast } from "@fortawesome/free-solid-svg-icons";
 import logos from "../Assets/Logolapy.png";
 import './Navbar.css';
 import { ShopContext } from "../../Context/ShopContext";
@@ -133,14 +133,23 @@ function Navigation() {
                         </div>
                     )}
                 </div>
-                {username && (
-        <div className="nav-cart">
-            <div className="nav-cart-count">{getTotalCartItems()}</div>
-            <NavLink to="/cart">
-                <FontAwesomeIcon className="cart-icon" icon={faCartArrowDown} />
-            </NavLink>
-        </div>
-    )}
+                                {username && (
+                        <div className="nav-cart">
+                            <div className="nav-cart-count">{getTotalCartItems()}</div>
+                            <NavLink to="/cart">
+                                <FontAwesomeIcon className="cart-icon" icon={faCartArrowDown} />
+                            </NavLink>
+                        </div>
+                    )}
+
+                            <div className="orders group relative">
+                                <NavLink to='/orders'>
+                                      <FontAwesomeIcon className="truck-icon" icon={faTruckFast} />
+                                    {/* Tooltip */}
+                                    <span className="tooltip-text">My Orders</span>
+                                </NavLink>
+                            </div>
+
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -187,7 +196,7 @@ function Navigation() {
                                         className="form-control mr-sm-2 search"
                                         name="search_bar"
                                         type="search"
-                                        placeholder="Search the laptop models & Products"
+                                        placeholder="&#128269;Search the laptop models & Products"
                                         aria-label="Search"
                                         onClick={handlePlaceholderClick}
                                     />

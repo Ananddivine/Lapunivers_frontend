@@ -3,6 +3,11 @@
   import './Css/PlaceOrder.css';
   import CartTotal from '../Components/CartTotal/CartTotal';
   import { ShopContext } from '../Context/ShopContext';
+  import axiosInstance from '../Components/axiosInstance/axiosInstance';
+  import { toast, ToastContainer } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
+
+
 
   const PlaceOrder = () => {
     const { navigate, cartItems} = useContext(ShopContext);
@@ -28,38 +33,37 @@
     // Handle form submission
     const handleSubmit = async (e) => {
       e.preventDefault();
-      
+  
       const products = Object.keys(cartItems).map((id) => ({
         productId: Number(id), // Convert ID to number
         quantity: cartItems[id],
         price: cartItems[id],
       }));
-    
+  
       console.log('Products array:', products); // Log the products array
-    
+  
       try {
-        const response = await fetch('https://lapuniversbackend-production.up.railway.app/api/orders/placeorder', {
-          method: 'POST',
+        const response = await axiosInstance.post('/api/orders/placeorder', {
+          products,
+          deliveryInfo: formData,
+        }, {
           headers: {
-            'Content-Type': 'application/json',
             'auth-token': localStorage.getItem('auth-token'),
-          },
-          body: JSON.stringify({
-            products,
-            deliveryInfo: formData,
-          }),
+          }
         });
-    
-        const data = await response.json();
+  
+        const data = response.data;
         if (data.success) {
           navigate('/orders');
+          window.location.reload(); 
         } else {
-          alert('Order placement failed: ' + data.message);
+          toast('Order placement failed: ' + data.message);
         }
       } catch (error) {
-        console.error('Error placing order:', error);
-        alert('There was an error placing your order. Please try again.');
-      } 
+        console.error('Error placing order:', error);        
+        toast.error(error.response ? error.response.data.message : error.message);        
+       
+      }
     };
     
 
@@ -123,6 +127,7 @@
             </div>
           </div>
         </div>
+        <ToastContainer />
       </form>
     );
   };

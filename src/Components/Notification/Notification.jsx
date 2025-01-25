@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt, faFilePdf, faFileArchive, faTrash } from '@fortawesome/free-solid-svg-icons';
 import '../Notification/Notification.css'
+import axiosInstance from '../axiosInstance/axiosInstance'; // Import the axiosInstance
+
 
 const Notification = () => {
   const [userIssues, setUserIssues] = useState([]);
@@ -20,7 +21,7 @@ const Notification = () => {
       }
   
       try {
-        const response = await axios.get('https://lapuniversbackend-production.up.railway.app/api/issues/user-issues', {
+        const response = await axiosInstance.get('/api/issues/user-issues', {
           headers: {
             Authorization: `Bearer ${token}`, // Send token in the header
           },
@@ -48,7 +49,7 @@ const Notification = () => {
     }
 
     try {
-      await axios.delete(`https://lapuniversbackend-production.up.railway.app/api/issues/issue/${issueId}`, {
+      await axiosInstance.delete(`/api/issues/issue/${issueId}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Send token in the header
         },

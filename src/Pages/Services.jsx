@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+
 import './Css/Service.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMicrochip, faQuoteLeft} from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from 'react-router-dom';
+import { faMicrochip} from "@fortawesome/free-solid-svg-icons";
+import axiosInstance from '../Components/axiosInstance/axiosInstance'
+
 
 function Services() {
-  const [username] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [files, setFiles] = useState([]);
-  const navigate = useNavigate();
-  const baseURL = 'https://lapuniversbackend-production.up.railway.app'; 
+
 
   // Dummy data for laptop issues and solutions
   const laptopIssues = [
@@ -87,247 +86,153 @@ useEffect(() => {
   window.scrollTo(0, 0);
 }, []);
 
-
 useEffect(() => {
-    axios.get(`${baseURL}/files`)
-      .then(response => {
-        setFiles(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching files:', error);
-      });
-  }, [baseURL]);
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const toggleDescription = (id) => {
-    setExpandedDescriptions(prevState => ({
-      ...prevState,
-      [id]: !prevState[id]
-    }));
-  };
-
-  const excludedWords = ["laptop", "issues", "my", "is", "having", "the", "a", "an"];
-
-  const filteredIssues = laptopIssues.filter(issue =>
-    searchQuery
-      .toLowerCase()
-      .split(/\s+/)
-      .filter(word => !excludedWords.includes(word))
-      .some(word =>
-        issue.issue.toLowerCase().includes(word) ||
-        issue.solution.toLowerCase().includes(word)
-      )
-  );
-  
-  const filteredFiles = files.filter(file =>
-    searchQuery
-      .toLowerCase()
-      .split(/\s+/)
-      .filter(word => !excludedWords.includes(word))
-      .some(word =>
-        file.filename.toLowerCase().includes(word)
-      )
-  );
-  
-  const handleDownloadClick = (filename) => {
-    const isUserLoggedIn = localStorage.getItem('username');
-    const userEmail = localStorage.getItem('email');
-
-    if (isUserLoggedIn && userEmail) {
-      window.location.href = `${baseURL}/upload/${filename}`;
-    } else {
-      navigate('/register');
+  const fetchFiles = async () => {
+    try {
+      const response = await axiosInstance.get("/api/fileupload");
+      console.log("Fetched data:", response.data);
+      setFiles(response.data);
+    } catch (err) {
+      console.error("Error fetching files:", err);
     }
   };
 
-  useEffect(() => {
-    axios.get(`${baseURL}/files`)
-      .then(response => {
-        setFiles(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching files:', error);
-      });
-  }, [baseURL]);
+  fetchFiles();
+}, []);
 
-  const handleReply = (index) => {
-    const isUserLoggedIn = localStorage.getItem('username');
-    const userEmail = localStorage.getItem('email');
-  
-    if (isUserLoggedIn && userEmail) {
-      const updatedFiles = [...files];
-      updatedFiles[index].showReply = !updatedFiles[index].showReply;
-      setFiles(updatedFiles);
-    } else {
-      navigate('/register');
-    }
-  };
-  
+const handleSearchChange = (e) => {
+  setSearchQuery(e.target.value);
+};
 
-  const handleReplySubmit = (index, filename) => {
-    if (files[index].replyText && files[index].replyText.trim() !== "") {
-      const replyWithUsername = `${username} :-  ${files[index].replyText}`;
-      console.log('Reply text:', replyWithUsername);
-  
-      const updatedFiles = [...files];
-      updatedFiles[index] = {
-        ...updatedFiles[index],
-        replies: updatedFiles[index].replies || [],
-        replyText: "",
-        showReply: false
-      };
-      updatedFiles[index].replies.push(replyWithUsername);
-      console.log('Updated files:', updatedFiles);
-  
-      setFiles(updatedFiles);
-  
-      const encodedFilename = encodeURIComponent(filename);
-      axios.post(`${baseURL}/files/${encodedFilename}/replies`, { reply: replyWithUsername })
-        .then(_response => {
-          console.log('Reply submitted successfully:', replyWithUsername);
-        })
-        .catch(error => {
-          console.error('Error submitting reply:', error);
-        });
-    } else {
-      alert("Please enter a reply.");
-    }
-  };
-  
-  useEffect(() => {
-    axios.get(`${baseURL}/files`)
-      .then(response => {
-        setFiles(response.data);
-        response.data.forEach(file => {
-          const encodedFilename = encodeURIComponent(file.filename);
-          axios.get(`${baseURL}/files/${encodedFilename}/replies`)
-            .then(replyResponse => {
-              setFiles(prevFiles => prevFiles.map(prevFile => {
-                if (prevFile.filename === file.filename) {
-                  return {
-                    ...prevFile,
-                    replies: replyResponse.data
-                  };
-                }
-                return prevFile;
-              }));
-            })
-            .catch(error => {
-              console.error(`Error fetching replies for ${file.filename}:`, error);
-            });
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching files:', error);
-      });
-  }, [baseURL]);
-  return (
-    <div className="service">
-      <div className="input-container">
+const toggleDescription = (id) => {
+  setExpandedDescriptions((prevState) => ({
+    ...prevState,
+    [id]: !prevState[id],
+  }));
+};
+
+const excludedWords = ["laptop", "issues", "my", "is", "having", "the", "a", "an"];
+
+const searchWords = searchQuery
+  .toLowerCase()
+  .split(/\s+/)
+  .filter((word) => !excludedWords.includes(word));
+
+const filteredIssues = laptopIssues.filter((issue) =>
+  searchWords.some(
+    (word) =>
+      issue.issue.toLowerCase().includes(word) ||
+      issue.solution.toLowerCase().includes(word)
+  )
+);
+
+
+return (
+  <div className="service">
+    <div className="input-container">
       <h1>SERVICES</h1>
-        <input
-          type="text"
-          placeholder="Search issues, solutions, or BIOS files"
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-        <a href="/welcome"><button>Upload Files. issues, images, Bios, and etc..</button></a>
-      </div>
-   <div className="services-container">
-       <ul className="results">
-                        {filteredIssues.map(issue => (
-                          <div key={issue.id} className="issue-link">
-                            <div className="issue-card">
-                              <h3 className="issue-title">{issue.issue}</h3>
-                              <p className={`issue-description ${expandedDescriptions[issue.id] ? 'expanded' : 'collapsed'}`}>{issue.solution}</p>
-                              <button onClick={() => toggleDescription(issue.id)}>
-                                {expandedDescriptions[issue.id] ? 'Hide' : 'Read More'}
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-
-                        {filteredFiles.map((file, index) => (
-                                    <li key={index}>
-                          {!file.filename.endsWith('.txt') && (
-                            <React.Fragment>
-                              <div className="boreds">
-                                <p>{file.description}</p>
-                                {file.replies && (
-                                  <ul>
-                                    {file.replies.map((reply, replyIndex) => (
-                                      <li key={replyIndex}>{reply}</li>
-                                    ))}
-                                  </ul>
-                                )}
-                                {file.showReply ? (
-                                  <div className="replycontainers">
-                                    <textarea
-                                      value={file.replyText || ""}
-                                      onChange={(e) => {
-                                        const updatedFiles = [...files];
-                                        updatedFiles[index].replyText = e.target.value;
-                                        setFiles(updatedFiles);
-                                      }}
-                                      placeholder="Enter your reply..."
-                                    />
-                                    <button className="replysubmits" onClick={() => handleReplySubmit(index, file.filename)}>Submit</button>
-                                  </div>
-                                ) : (
-                                  <button className="buttonicon" onClick={() => handleReply(index)} title="Reply">
-                                    <FontAwesomeIcon icon={faQuoteLeft} className="icon" /> Reply
-                                  </button>
-                                )}
-                                 {localStorage.getItem('username') && localStorage.getItem('email') ? (
-                                    <button className="downloadsections" onClick={() => handleDownloadClick(file.filename)} title="Download">
-                                      <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
-                                    </button>
-                                  ) : (
-                                    <a className="downloadsectionss" href="/welcome" title="Register to Download">
-                                      <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
-                                    </a>
-                                  )}
-
-                              </div>
-                            </React.Fragment>
-                          )}
-                        </li>
-                      ))}
-                </ul>
-
-        <div className="feed-container">
-          <div className="feed">
-            {/* Replace with dynamic content */}
-            <div className="feed-item">
-              <h3>Latest Updates</h3>
-              <p>
-                {filteredFiles.map((file) => (
-                  <li key={file.filename}>
-                    <div className="feed-section">
-                      <button className="feed-download" onClick={() => handleDownloadClick(file.filename)}>
-                        <FontAwesomeIcon icon={faMicrochip} className="icon" /> {file.filename}
-                      </button>
-                    </div>
-                  </li>
-                ))}
+      <input
+        type="text"
+        placeholder="Search issues, solutions, or BIOS files"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
+      <a href="/welcome">
+        <button>Upload Files, Issues, Images, BIOS, etc.</button>
+      </a>
+    </div>
+    <div className="services-container">
+      <ul className="results">
+        {/* Render Laptop Issues */}
+        {filteredIssues.map((issue) => (
+          <div key={issue.id} className="issue-link">
+            <div className="issue-card">
+              <h3 className="issue-title">{issue.issue}</h3>
+              <p
+                className={`issue-description ${
+                  expandedDescriptions[issue.id] ? "expanded" : "collapsed"
+                }`}
+              >
+                {issue.solution}
               </p>
+              <button onClick={() => toggleDescription(issue.id)}>
+                {expandedDescriptions[issue.id] ? "Hide" : "Read More"}
+              </button>
             </div>
-            <div className="feed-item">
-              <h3>Customer Ratings</h3>
-              <p>★★★★★</p>
-            </div>
-            <div className="feed-item">
-              <h3>Featured Files</h3>
-              <p>Download the latest performance enhancements.</p>
-            </div>
-            {/* Add more feed items as needed */}
+          </div>
+        ))}
+
+        {/* Render Files */}
+        {files.map(file => (
+                <li  key={file._id}  className="flex justify-between text-center items-center p-10 m-1 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md" >
+               
+         
+              <p>    <a
+              href={file.attachments[0]}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              {file.title}
+            </a></p>
+          
+              {file.replies && (
+                <ul>
+                  {file.replies.map((reply, replyIndex) => (
+                    <li key={replyIndex}>{reply}</li>
+                  ))}
+                </ul>
+              )}
+              {localStorage.getItem("username") && localStorage.getItem("email") ? (
+                <button className="downloadsections" title="Download">
+                  <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
+                </button>
+              ) : (
+                <a className="downloadsectionss" href="/welcome" title="Register to Download">
+                  <FontAwesomeIcon icon={faMicrochip} className="ico" /> {file.filename}
+                </a>
+              )}
+        
+          </li>
+        ))}
+      </ul>
+
+      <div className="feed-container">
+        <div className="feed">
+          <div className="feed-item">
+            <h3>Latest Updates</h3>
+            <ul>
+              {files.map(file => (
+                <li  key={file._id}>
+                  
+                  <div className="feed-section">
+                    <button className="feed-download">
+                            <a
+                      href={file.attachments[0]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                      ><span></span></a>
+                      <FontAwesomeIcon icon={faMicrochip} className="icon" /> {file.filename}
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="feed-item">
+            <h3>Customer Ratings</h3>
+            <p>★★★★★</p>
+          </div>
+          <div className="feed-item">
+            <h3>Featured Files</h3>
+            <p>Download the latest performance enhancements.</p>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  </div>
+);
+}
+
 export default Services;
