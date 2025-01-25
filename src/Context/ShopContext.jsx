@@ -34,6 +34,7 @@ export const ShopContextProvider = (props) => {
         headers: {
           'auth-token': `${localStorage.getItem('auth-token')}`,
         },
+        withCredentials: true,
       })
         .then((response) => {
           setCartItems(response.data);
@@ -57,7 +58,8 @@ export const ShopContextProvider = (props) => {
           headers: {
             'auth-token': token, // Send the JWT here
             'Content-Type': 'application/json',
-          },
+          },    
+          withCredentials: true,
         }
       );
 
@@ -85,6 +87,7 @@ export const ShopContextProvider = (props) => {
             'auth-token': localStorage.getItem('auth-token'),
             'Content-Type': 'application/json',
           },
+          withCredentials: true,
         }
       )
         .then((response) => console.log('Item removed from cart:', response.data))
