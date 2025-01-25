@@ -33,6 +33,7 @@ export const ShopContextProvider = (props) => {
       axiosInstance.post(`${baseURL}/api/users/getcart`, {}, {
         headers: {
           'auth-token': `${localStorage.getItem('auth-token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('auth-token')}`,
         },
         withCredentials: true,
       })
@@ -57,6 +58,7 @@ export const ShopContextProvider = (props) => {
         {
           headers: {
             'auth-token': token, // Send the JWT here
+            'Authorization': `Bearer ${localStorage.getItem('auth-token')}`,
             'Content-Type': 'application/json',
           },    
           withCredentials: true,
@@ -85,6 +87,7 @@ export const ShopContextProvider = (props) => {
         {
           headers: {
             'auth-token': localStorage.getItem('auth-token'),
+            'Authorization': `Bearer ${localStorage.getItem('auth-token')}`,
             'Content-Type': 'application/json',
           },
           withCredentials: true,
