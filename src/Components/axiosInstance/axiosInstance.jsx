@@ -6,6 +6,7 @@ const axiosInstance = axios.create({
   withCredentials: true, // Include credentials with requests
   headers: {
     'Content-Type': 'application/json',
+    'auth-token': token,
   },
 });
 
