@@ -1,13 +1,18 @@
-// Create axios instance in a separate file (e.g., api.js)
 import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
-  withCredentials: true, // Include credentials with requests
   headers: {
     'Content-Type': 'application/json',
-    'auth-token': token,
   },
 });
+
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('auth-token');
+  if (token) {
+    config.headers['auth-token'] = token; // Automatically add the token
+  }
+  return config;
+}, (error) => Promise.reject(error));
 
 export default axiosInstance;
