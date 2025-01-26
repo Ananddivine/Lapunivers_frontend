@@ -32,10 +32,8 @@ export const ShopContextProvider = (props) => {
     if (localStorage.getItem('auth-token')) {
       axiosInstance.post(`${baseURL}/api/users/getcart`, {}, {
         headers: {
-         
-          'Authorization': `Bearer ${localStorage.getItem('auth-token')}`,
+          'auth-token': `${localStorage.getItem('auth-token')}`,
         },
-        withCredentials: true,
       })
         .then((response) => {
           setCartItems(response.data);
@@ -57,11 +55,9 @@ export const ShopContextProvider = (props) => {
         { item: itemId },
         {
           headers: {
-           
-            'Authorization': `Bearer ${localStorage.getItem('auth-token')}`,
+            'auth-token': token, // Send the JWT here
             'Content-Type': 'application/json',
-          },    
-          withCredentials: true,
+          },
         }
       );
 
@@ -86,11 +82,9 @@ export const ShopContextProvider = (props) => {
         { item: itemId },
         {
           headers: {
-         
-            'Authorization': `Bearer ${localStorage.getItem('auth-token')}`,
+            'auth-token': localStorage.getItem('auth-token'),
             'Content-Type': 'application/json',
           },
-          withCredentials: true,
         }
       )
         .then((response) => console.log('Item removed from cart:', response.data))
